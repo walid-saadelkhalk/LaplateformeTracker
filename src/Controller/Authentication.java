@@ -9,7 +9,7 @@ import src.Modele.Database;
 
 public class Authentication {
     
-    public static void registerStudent() {
+    public static void create_account() {
         Scanner scanner = new Scanner(System.in);
         
         System.out.println("Enter first name:");
@@ -20,7 +20,7 @@ public class Authentication {
         
         System.out.println("Enter age:");
         int age = scanner.nextInt();
-        scanner.nextLine(); // Consume newline left-over
+        scanner.nextLine(); 
         
         System.out.println("Enter email:");
         String email = scanner.nextLine();
@@ -28,10 +28,10 @@ public class Authentication {
         System.out.println("Enter password:");
         String password = scanner.nextLine();
         
-        // Close scanner
+        
         scanner.close();
         
-        // Insert student into database
+       
         Connection connection = null;
         PreparedStatement stmt = null;
         
@@ -42,8 +42,6 @@ public class Authentication {
             stmt.setString(1, firstName);
             stmt.setString(2, lastName);
             stmt.setInt(3, age);
-            stmt.setString(4, generateStudentId(firstName, lastName)); // Exemple de génération d'un ID étudiant
-            stmt.setInt(5, 1); // Remplacez 1 par l'ID du gradebook approprié
             stmt.setString(6, email);
             stmt.setString(7, password);
             
@@ -75,6 +73,6 @@ public class Authentication {
     }
     
     public static void main(String[] args) {
-        registerStudent();
+        create_account();
     }
 }
