@@ -1,3 +1,4 @@
+package Modele;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -9,13 +10,9 @@ public class Database {
     public static Connection getConnection() {
         if (connection == null) {
             try {
-               
                 String url = "jdbc:mysql://localhost:3306/Harvard";
                 String user = "root";
                 String password = "dominique59";
-                
-                
-                
                 connection = DriverManager.getConnection(url, user, password);
                 System.out.println("Connection established successfully.");
             } catch (SQLException e) {
@@ -26,5 +23,3 @@ public class Database {
         return connection;
     }
 }
-
-
