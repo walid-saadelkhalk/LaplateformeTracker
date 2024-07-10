@@ -1,44 +1,28 @@
 package src.menu;
 
-import src.controler.Authentication;
 import java.util.Scanner;
 
 public class MenuAuthentication {
+    Scanner scanner = new Scanner(System.in);
+
     public void menuAuthentication() {
-        Authentication authentication = new Authentication();
-        Scanner scanner = new Scanner(System.in);
-
-        System.out.println("WELCOME TO AUTHENTICATION MENU\n");
-        System.out.println("What do you want to do?");
-        System.out.println("1. Login");
-        System.out.println("2. Register");
+        System.out.println("\nCONNECTION!");
+        System.out.println("1. Admin");
+        System.out.println("2. Student");
         System.out.println("3. Quit");
-        System.out.println("Enter your choice:");
+        System.out.println("Enter your authentication type:");
 
-        int authChoice = scanner.nextInt();
-        scanner.nextLine(); // Consume newline
+        int authentication = scanner.nextInt();
+        scanner.nextLine();
 
-        switch (authChoice) {
+        switch (authentication) {
             case 1:
-                System.out.println("Enter email:");
-                String email = scanner.nextLine();
-                System.out.println("Enter password:");
-                String password = scanner.nextLine();
-                authentication.login(email, password);
+                MenuAdmin menuAdmin = new MenuAdmin();
+                menuAdmin.menuAdmin();
                 break;
             case 2:
-                System.out.println("Enter first name:");
-                String firstName = scanner.nextLine();
-                System.out.println("Enter last name:");
-                String lastName = scanner.nextLine();
-                System.out.println("Enter age:");
-                int age = scanner.nextInt();
-                scanner.nextLine(); // Consume newline
-                System.out.println("Enter email:");
-                String regEmail = scanner.nextLine();
-                System.out.println("Enter password:");
-                String regPassword = scanner.nextLine();
-                authentication.register(firstName, lastName, age, regEmail, regPassword);
+                MenuStudent menuStudent = new MenuStudent();
+                menuStudent.menuStudent();
                 break;
             case 3:
                 System.out.println("Goodbye!");
@@ -47,6 +31,5 @@ public class MenuAuthentication {
             default:
                 System.out.println("Invalid choice.");
         }
-        scanner.close();
     }
 }
