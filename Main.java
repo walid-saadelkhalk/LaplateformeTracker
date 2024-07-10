@@ -1,8 +1,9 @@
-import src.Controller.Authentication;
+// import src.Controller.Authentication;
 
 public class Main {
     public static void main(String[] args) {
-        
-        Authentication.createAccount();
+        Mainloop.main(args);
+        // Authentication.createAccount();
+
     }
 }
