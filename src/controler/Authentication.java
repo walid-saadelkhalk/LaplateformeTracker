@@ -1,11 +1,11 @@
-package src.Controller;
+package src.controler;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Scanner;
 
-import src.Modele.Database;
+import src.model.Database;
 
 public class Authentication {
     
