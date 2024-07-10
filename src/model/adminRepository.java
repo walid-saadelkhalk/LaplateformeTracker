@@ -12,6 +12,7 @@ public class AdminRepository {
         String sql = "INSERT INTO Student (First_name, Last_name, Age, ID_student, ID_gradebook, Mail, Password) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try (Connection connection = Database.getConnection();
              PreparedStatement stmt = connection.prepareStatement(sql)) {
+                
     
             
             String studentId = generateStudentId(firstName, lastName);

@@ -14,6 +14,7 @@ public class StudentRepository {
         try (Connection connection = Database.getConnection();
              PreparedStatement stmt = connection.prepareStatement(sql)) {
 
+
             stmt.setInt(1, studentId);
             ResultSet rs = stmt.executeQuery();
 

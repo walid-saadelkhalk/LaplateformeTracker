@@ -1,6 +1,7 @@
 package src.menu;
 
 import src.model.AdminRepository;
+import src.controler.Authentication;
 import java.util.Scanner;
 
 public class MenuAdmin {
@@ -30,18 +31,7 @@ public class MenuAdmin {
                 adminRepo.searchStudentById(searchId);
                 break;
             case 2:
-                System.out.println("Enter first name:");
-                String firstName = scanner.nextLine();
-                System.out.println("Enter last name:");
-                String lastName = scanner.nextLine();
-                System.out.println("Enter age:");
-                int age = scanner.nextInt();
-                scanner.nextLine(); // Consume newline
-                System.out.println("Enter email:");
-                String email = scanner.nextLine();
-                System.out.println("Enter password:");
-                String password = scanner.nextLine();
-                adminRepo.createAccount(firstName, lastName, age, email, password);
+                Authentication.createAccount();
                 break;
             case 3:
                 System.out.println("Enter student ID to update:");
