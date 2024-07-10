@@ -9,7 +9,7 @@ import src.Modele.Database;
 
 public class Authentication {
     
-    public static void create_account() {
+    public static void createAccount() {
         Scanner scanner = new Scanner(System.in);
         
         System.out.println("Enter first name:");
@@ -42,6 +42,8 @@ public class Authentication {
             stmt.setString(1, firstName);
             stmt.setString(2, lastName);
             stmt.setInt(3, age);
+            stmt.setString(4, generateStudentId(firstName, lastName)); 
+            stmt.setInt(5, 1); 
             stmt.setString(6, email);
             stmt.setString(7, password);
             
@@ -72,7 +74,7 @@ public class Authentication {
         return firstName.substring(0, 1).toUpperCase() + lastName.toLowerCase();
     }
     
-    public static void main(String[] args) {
-        create_account();
-    }
+    // public static void main(String[] args) {
+    //     registerStudent();
+    // }
 }
