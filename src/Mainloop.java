@@ -15,12 +15,6 @@ public class Mainloop {
                 
                 switch (choice) {
                     case 1:
-                        System.out.println("CONNECTION!\n");
-                        System.out.println("1. Admin");
-                        System.out.println("2. Student");
-                        System.out.println("3. Quit ");
-                        System.out.println("Enter your authentication type:");
-
                         MenuAuthentication menuAuthentication = new MenuAuthentication();
                         menuAuthentication.menuAuthentication();
                         

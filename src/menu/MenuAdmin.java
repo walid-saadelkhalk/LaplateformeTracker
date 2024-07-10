@@ -20,7 +20,8 @@ public class MenuAdmin {
         Scanner scanner = new Scanner(System.in);
         int adminChoice = scanner.nextInt();
         scanner.nextLine();
-        boolean authenticationman = true;
+        boolean authenticationMan = true;
+        
         switch (adminChoice){
             case 1:
                 System.out.println("Search a student");
@@ -45,7 +46,7 @@ public class MenuAdmin {
                 System.out.println("All students");
                 break;
             case 8:
-            authenticationman = false;
+            authenticationMan = false;
                 break;
             default:
                 System.out.println("Invalid choice.");
