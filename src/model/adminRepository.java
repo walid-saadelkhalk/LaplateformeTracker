@@ -8,20 +8,22 @@ import java.sql.Statement;
 
 public class adminRepository {
 
-    // Create a new student account
     public void createAccount(String firstName, String lastName, int age, String email, String password) {
         String sql = "INSERT INTO Student (First_name, Last_name, Age, ID_student, ID_gradebook, Mail, Password) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try (Connection connection = Database.getConnection();
              PreparedStatement stmt = connection.prepareStatement(sql)) {
-
+    
+            
+            String studentId = generateStudentId(firstName, lastName);
+    
             stmt.setString(1, firstName);
             stmt.setString(2, lastName);
             stmt.setInt(3, age);
-            stmt.setString(4, generateStudentId(firstName, lastName));
-            stmt.setInt(5, 1); // Assuming a default ID_gradebook value of 1
+            stmt.setString(4, studentId);
+            stmt.setInt(5, 1); 
             stmt.setString(6, email);
             stmt.setString(7, password);
-
+    
             int rowsAffected = stmt.executeUpdate();
             if (rowsAffected > 0) {
                 System.out.println("Student inserted successfully!");
