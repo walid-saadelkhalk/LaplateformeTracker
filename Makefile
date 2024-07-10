@@ -10,7 +10,8 @@ SRC_FILES = Main.java \
             $(SRC_DIR)/model/Database.java \
             $(SRC_DIR)/controler/Authentication.java \
 			$(SRC_DIR)/menu/MenuAuthentication.java \
-			$(SRC_DIR)/menu/MenuAdmin.java
+			$(SRC_DIR)/menu/MenuAdmin.java \
+			$(SRC_DIR)/menu/MenuStudent.java 
 
 MAIN_CLASS = Main
 
