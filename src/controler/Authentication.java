@@ -1,4 +1,4 @@
-package src.Controller;
+package src.controler;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

@@ -5,7 +5,7 @@ public class Mainloop {
     public static void main(String[] args) {
         try (java.util.Scanner scanner = new Scanner(System.in)) {
             while (true) {
-                System.out.println("Welcome to Harvard University!");
+                System.out.println("WELCOME TO HARVARD UNIVERSITY!");
                 System.out.println("1. Go to authentication");
                 System.out.println("2. Quit");
                 System.out.println("Enter your choice:");
@@ -15,7 +15,7 @@ public class Mainloop {
                 
                 switch (choice) {
                     case 1:
-                        System.out.println("Welcome to connection!\n");
+                        System.out.println("CONNECTION!\n");
                         System.out.println("1. Admin");
                         System.out.println("2. Student");
                         System.out.println("3. Quit ");
