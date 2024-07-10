@@ -3,6 +3,13 @@ import java.util.Scanner;
 import menu.MenuAdmin;
 import menu.MenuStudent;
 
+/*
+ * This class is responsible for the authentication of the user.
+ * It will prompt the user to choose between admin and student.
+ * It will then call the respective menu for the user.
+ * It will also allow the user to quit the program.
+ */
+
 public class MenuAuthentication {
     public void menuAuthentication(Scanner scanner){
 

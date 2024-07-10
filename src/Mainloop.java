@@ -1,6 +1,14 @@
 import src.menu.MenuAuthentication;
 import java.util.Scanner;
 
+
+/*
+ * This class is responsible for the main loop of the program.
+ * It will prompt the user to choose between authentication and quitting the program.
+ * It will then call the respective menu for the user.
+ */
+
+
 public class Mainloop {
     public static void main(String[] args) {
         try (java.util.Scanner scanner = new Scanner(System.in)) {

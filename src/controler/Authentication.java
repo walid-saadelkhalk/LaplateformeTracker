@@ -4,8 +4,13 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Scanner;
-
 import src.Modele.Database;
+
+/*
+ * This class is responsible for the authentication of the user.
+ * It will prompt the user to create an account.
+ * It will then call the respective menu for the user.
+ */
 
 public class Authentication {
     

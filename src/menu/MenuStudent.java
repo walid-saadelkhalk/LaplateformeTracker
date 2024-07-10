@@ -1,6 +1,12 @@
 package menu;
 import java.util.Scanner;
 
+/*
+ * This class is responsible for the menu of the student.
+ * It will prompt the student to choose between different options.
+ * It will then call the respective method.
+ */
+
 public class MenuStudent {
     public void menuStudent(Scanner scanner){
 

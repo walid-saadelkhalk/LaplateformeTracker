@@ -2,6 +2,12 @@ package menu;
 import java.util.Scanner; 
 import src.controler.Authentication;
 
+/*
+ * This class is responsible for the menu of the admin.
+ * It will prompt the admin to choose between different options.
+ * It will then call the respective method from the Authentication class.
+ */
+
 public class MenuAdmin {
     public void menuAdmin(Scanner scanner){
         boolean continueAdminLoop = true;
@@ -19,7 +25,6 @@ public class MenuAdmin {
             System.out.println("8. Quit");
             System.out.println("Enter your choice:");
 
-            // Scanner scanner = new Scanner(System.in);
             int adminChoice = scanner.nextInt();
             scanner.nextLine();
             boolean authenticationMan = true;
