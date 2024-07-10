@@ -1,11 +1,11 @@
 package src.menu;
 
-import src.model.adminRepository;
+import src.model.AdminRepository;
 import java.util.Scanner;
 
 public class MenuAdmin {
     public void menuAdmin() {
-        adminRepository adminRepo = new adminRepository();
+        AdminRepository adminRepo = new AdminRepository();
         Scanner scanner = new Scanner(System.in);
 
         System.out.println("WELCOME ADMIN ANDERSON!\n");

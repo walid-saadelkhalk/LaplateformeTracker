@@ -6,7 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class studentRepository {
+public class StudentRepository {
 
     // Select student by ID
     public void selectStudentById(int studentId) {
