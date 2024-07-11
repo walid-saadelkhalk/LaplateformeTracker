@@ -12,7 +12,7 @@ public class Database {
             try {
                 String url = "jdbc:mysql://localhost:3306/Harvard";
                 String user = "root";
-                String password = "rootequipe7+";
+                String password = "Vcassis13*";
                 connection = DriverManager.getConnection(url, user, password);
                 System.out.println("Connection established successfully.");
             } catch (SQLException e) {
