@@ -1,6 +1,5 @@
 package src.menu;
 import java.util.Scanner; 
-import src.controler.Authentication;
 import src.model.AdminRepository;
 
 /*
