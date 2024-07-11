@@ -10,8 +10,13 @@ import java.util.Scanner;
 public class AdminRepository {
 
     // Méthode pour créer un compte étudiant
+<<<<<<< HEAD
     public static void createAccount() {
         Scanner scanner = new Scanner(System.in);
+=======
+    public static void createAccount(Scanner scanner) {
+        // Scanner scanner = new Scanner(System.in);
+>>>>>>> dev
         
         System.out.println("Enter first name:");
         String firstName = scanner.nextLine();
@@ -29,8 +34,11 @@ public class AdminRepository {
         System.out.println("Enter password:");
         String password = scanner.nextLine();
         
+<<<<<<< HEAD
         scanner.close();
         
+=======
+>>>>>>> dev
         Connection connection = null;
         PreparedStatement stmt = null;
         
@@ -69,8 +77,13 @@ public class AdminRepository {
     }
 
     // Méthode pour mettre à jour un étudiant
+<<<<<<< HEAD
     public static void updateStudent() {
         Scanner scanner = new Scanner(System.in);
+=======
+    public static void updateStudent(Scanner scanner) {
+        // Scanner scanner = new Scanner(System.in);
+>>>>>>> dev
         
         System.out.println("Enter student ID to update:");
         int studentId = scanner.nextInt();
@@ -91,8 +104,11 @@ public class AdminRepository {
         
         System.out.println("Enter new password:");
         String password = scanner.nextLine();
+<<<<<<< HEAD
         
         scanner.close();
+=======
+>>>>>>> dev
 
         String sql = "UPDATE Student SET First_name = ?, Last_name = ?, Age = ?, Mail = ?, Password = ? WHERE ID = ?";
         try (Connection connection = Database.getConnection();
@@ -117,14 +133,22 @@ public class AdminRepository {
     }
 
     // Méthode pour supprimer un étudiant
+<<<<<<< HEAD
     public static void deleteStudent() {
         Scanner scanner = new Scanner(System.in);
+=======
+    public static void deleteStudent(Scanner scanner) {
+        // Scanner scanner = new Scanner(System.in);
+>>>>>>> dev
         
         System.out.println("Enter student ID to delete:");
         int studentId = scanner.nextInt();
         scanner.nextLine(); // Consume newline
+<<<<<<< HEAD
         
         scanner.close();
+=======
+>>>>>>> dev
 
         String sql = "DELETE FROM Student WHERE ID = ?";
         try (Connection connection = Database.getConnection();
@@ -144,7 +168,11 @@ public class AdminRepository {
     }
 
     // Méthode pour récupérer tous les étudiants
+<<<<<<< HEAD
     public static void getAllStudents() {
+=======
+    public static void getAllStudents(Scanner scanner) {
+>>>>>>> dev
         String sql = "SELECT * FROM Student";
         try (Connection connection = Database.getConnection();
              Statement stmt = connection.createStatement();
@@ -157,7 +185,11 @@ public class AdminRepository {
                 int age = rs.getInt("Age");
                 String email = rs.getString("Mail");
                 String password = rs.getString("Password");
+<<<<<<< HEAD
                 System.out.println("ID: " + id + ", Name: " + firstName + " " + lastName + ", Age: " + age + ", Email: " + email + ", Password: " + password);
+=======
+                System.out.println("ID: " + id + "\nName: " + firstName + " " + lastName + "\nAge: " + age + "\nEmail: " + email + "\nPassword: " + password + "\n");
+>>>>>>> dev
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -204,7 +236,11 @@ public class AdminRepository {
                 int age = rs.getInt("Age");
                 String email = rs.getString("Mail");
                 String password = rs.getString("Password");
+<<<<<<< HEAD
                 System.out.println("ID: " + id + ", Name: " + firstName + " " + lastName + ", Age: " + age + ", Email: " + email + ", Password: " + password);
+=======
+                System.out.println("ID: " + id + "\nFirstame: " + firstName + "\nLastname: " + lastName + "\nAge: " + age + "\nEmail: " + email + "\nPassword: " + password);
+>>>>>>> dev
             }
 
             if (!rs.isBeforeFirst()) {

@@ -8,33 +8,27 @@ import java.util.Scanner;
 import src.model.Database;
 
 public class Authentication {
-    
-    public static void createAccount() {
-        Scanner scanner = new Scanner(System.in);
-        
+
+    public static void createAccount(Scanner scanner) {
         System.out.println("Enter first name:");
         String firstName = scanner.nextLine();
-        
+
         System.out.println("Enter last name:");
         String lastName = scanner.nextLine();
-        
+
         System.out.println("Enter age:");
         int age = scanner.nextInt();
         scanner.nextLine(); 
-        
+
         System.out.println("Enter email:");
         String email = scanner.nextLine();
-        
+
         System.out.println("Enter password:");
         String password = scanner.nextLine();
-        
-        
-        scanner.close();
-        
-       
+
         Connection connection = null;
         PreparedStatement stmt = null;
-        
+
         try {
             connection = Database.getConnection();
             String sql = "INSERT INTO Student (First_name, Last_name, Age, ID_student, ID_gradebook, Mail, Password) VALUES (?, ?, ?, ?, ?, ?, ?)";
@@ -46,7 +40,7 @@ public class Authentication {
             stmt.setInt(5, 1); 
             stmt.setString(6, email);
             stmt.setString(7, password);
-            
+
             int rowsAffected = stmt.executeUpdate();
             if (rowsAffected > 0) {
                 System.out.println("Student registered successfully!");
@@ -68,11 +62,13 @@ public class Authentication {
             }
         }
     }
-    
-    
+
     private static String generateStudentId(String firstName, String lastName) {
         return firstName.substring(0, 1).toUpperCase() + lastName.toLowerCase();
     }
+<<<<<<< HEAD
     
     
+=======
+>>>>>>> dev
 }
