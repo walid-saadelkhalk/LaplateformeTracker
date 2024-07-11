@@ -164,24 +164,40 @@ public class AdminRepository {
         }
     }
 
-    // Méthode pour rechercher un étudiant par ID
-    public static void searchStudentById() {
-        Scanner scanner = new Scanner(System.in);
-        
-        System.out.println("Enter student ID to search:");
-        int studentId = scanner.nextInt();
-        scanner.nextLine(); // Consume newline
-        
-        scanner.close();
+    public static void searchStudent(String searchBy, String searchValue) {
+        String sql = "";
+        switch (searchBy.toLowerCase()) {
+            case "id":
+                sql = "SELECT * FROM Student WHERE ID = ?";
+                break;
+            case "firstname":
+                sql = "SELECT * FROM Student WHERE First_name = ?";
+                break;
+            case "lastname":
+                sql = "SELECT * FROM Student WHERE Last_name = ?";
+                break;
+            case "age":
+                sql = "SELECT * FROM Student WHERE Age = ?";
+                break;
+            default:
+                System.out.println("Invalid search criteria.");
+                return;
+        }
 
-        String sql = "SELECT * FROM Student WHERE ID = ?";
         try (Connection connection = Database.getConnection();
-             PreparedStatement stmt = connection.prepareStatement(sql)) {
+            PreparedStatement stmt = connection.prepareStatement(sql)) {
 
-            stmt.setInt(1, studentId);
+            // Bind the search value based on the search criteria
+            if ("id".equals(searchBy.toLowerCase()) || "age".equals(searchBy.toLowerCase())) {
+                int intValue = Integer.parseInt(searchValue);
+                stmt.setInt(1, intValue);
+            } else {
+                stmt.setString(1, searchValue);
+            }
+
             ResultSet rs = stmt.executeQuery();
 
-            if (rs.next()) {
+            while (rs.next()) {
                 int id = rs.getInt("ID");
                 String firstName = rs.getString("First_name");
                 String lastName = rs.getString("Last_name");
@@ -189,15 +205,21 @@ public class AdminRepository {
                 String email = rs.getString("Mail");
                 String password = rs.getString("Password");
                 System.out.println("ID: " + id + ", Name: " + firstName + " " + lastName + ", Age: " + age + ", Email: " + email + ", Password: " + password);
-            } else {
+            }
+
+            if (!rs.isBeforeFirst()) {
                 System.out.println("Student not found.");
             }
+
         } catch (SQLException e) {
             e.printStackTrace();
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid input for numeric fields.");
         }
     }
 
-    // Méthode pour générer un ID étudiant
+
+        // Méthode pour générer un ID étudiant
     private static String generateStudentId(String firstName, String lastName) {
         return firstName.substring(0, 1).toUpperCase() + lastName.toLowerCase();
     }
