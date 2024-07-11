@@ -11,7 +11,7 @@ import src.model.AdminRepository;
 public class MenuAdmin {
     public void menuAdmin(Scanner scanner) {
         boolean continueAdminLoop = true;
-        AdminRepository adminRepository = new AdminRepository();
+        // AdminRepository adminRepository = new AdminRepository();
         
         while (continueAdminLoop) {
             System.out.println("\nWELCOME ADMIN ANDERSON!");
@@ -27,8 +27,7 @@ public class MenuAdmin {
             System.out.println("Enter your choice:");
 
             if (scanner.hasNextInt()) {
-                int adminChoice = scanner.nextInt();;
-            boolean authenticationMan = true;
+                int adminChoice = scanner.nextInt();
             
                 switch (adminChoice){
                     case 1:
