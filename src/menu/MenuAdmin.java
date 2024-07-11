@@ -21,7 +21,7 @@ public class MenuAdmin {
         System.out.println("Enter your choice:");
 
         int adminChoice = scanner.nextInt();
-        scanner.nextLine(); // Consume newline
+        scanner.nextLine(); 
 
         switch (adminChoice) {
             case 1:
