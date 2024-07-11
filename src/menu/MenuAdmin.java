@@ -1,4 +1,4 @@
-package menu;
+package src.menu;
 import java.util.Scanner; 
 import src.controler.Authentication;
 
@@ -19,7 +19,6 @@ public class MenuAdmin {
             System.out.println("8. Quit");
             System.out.println("Enter your choice:");
 
-            // Scanner scanner = new Scanner(System.in);
             int adminChoice = scanner.nextInt();
             scanner.nextLine();
             boolean authenticationMan = true;
