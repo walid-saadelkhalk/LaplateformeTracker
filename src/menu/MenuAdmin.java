@@ -1,4 +1,4 @@
-package menu;
+package src.menu;
 import java.util.Scanner; 
 import src.controler.Authentication;
 
