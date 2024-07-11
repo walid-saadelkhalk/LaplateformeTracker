@@ -1,12 +1,9 @@
-package src.menu;
-import java.util.Scanner; 
-import src.model.AdminRepository;
+// File: src/menu/MenuAdmin.java
 
-/*
- * This class is responsible for the menu of the admin.
- * It will prompt the admin to choose between different options.
- * It will then call the respective method from the Authentication class.
- */
+package src.menu;
+
+import java.util.Scanner;
+import src.model.AdminRepository;
 
 public class MenuAdmin {
     public void menuAdmin(Scanner scanner) {
@@ -27,10 +24,10 @@ public class MenuAdmin {
             System.out.println("Enter your choice:");
 
             if (scanner.hasNextInt()) {
-                int adminChoice = scanner.nextInt();;
-            boolean authenticationMan = true;
+                int adminChoice = scanner.nextInt();
+                scanner.nextLine(); // Consume newline after integer input
             
-                switch (adminChoice){
+                switch (adminChoice) {
                     case 1:
                         AdminRepository.searchStudent(scanner);
                         break;
@@ -44,7 +41,7 @@ public class MenuAdmin {
                         AdminRepository.deleteStudent(scanner);
                         break;
                     case 5:
-                        System.out.println("Enter a grade");
+                        AdminRepository.addGrade(scanner);
                         break;
                     case 6:
                         System.out.println("See classes");
@@ -53,7 +50,6 @@ public class MenuAdmin {
                         AdminRepository.getAllStudents(scanner);
                         break;
                     case 8:
-                    System.out.println("waddup");
                         continueAdminLoop = false;
                         break;
                     default:
@@ -62,7 +58,7 @@ public class MenuAdmin {
                 }
             } else {
                 System.out.println("Invalid input. Please enter a number.");
-                scanner.nextLine();
+                scanner.nextLine(); // Consume invalid input
             }
         }
     }
