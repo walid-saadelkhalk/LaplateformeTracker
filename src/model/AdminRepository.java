@@ -150,8 +150,8 @@ public class AdminRepository {
                 String lastName = rs.getString("Last_name");
                 int age = rs.getInt("Age");
                 String email = rs.getString("Mail");
-                String password = rs.getString("Password");
-                System.out.println("ID: " + id + ", Name: " + firstName + " " + lastName + ", Age: " + age + ", Email: " + email + ", Password: " + password);
+                // String password = rs.getString("Password");
+                System.out.println("ID: " + id + "\nName: " + firstName + " " + lastName + "\nAge: " + age + "\nEmail: " + email + "\n");
             }
         } catch (SQLException e) {
             e.printStackTrace();

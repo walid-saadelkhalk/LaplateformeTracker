@@ -48,7 +48,8 @@ public class MenuAdmin {
                         System.out.println("See classes");
                         break;
                     case 7:
-                        System.out.println("All students");
+                    System.out.println("All students:\n");
+                        AdminRepository.getAllStudents(scanner);
                         break;
                     case 8:
                         System.out.println("waddup");
