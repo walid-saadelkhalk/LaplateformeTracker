@@ -1,7 +1,7 @@
 package src.menu;
 import java.util.Scanner;
-import menu.MenuAdmin;
-import menu.MenuStudent;
+import src.menu.MenuAdmin;
+import src.menu.MenuStudent;
 
 public class MenuAuthentication {
     public void menuAuthentication(Scanner scanner){
