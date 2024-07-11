@@ -33,17 +33,16 @@ public class MenuAdmin {
             
             switch (adminChoice){
                 case 1:
-                    System.out.println("incoming");
+                    AdminRepository.searchStudent(scanner);
                     break;
                 case 2:
-                    Authentication authentication = new Authentication();
-                    authentication.createAccount();
+                    AdminRepository.createAccount(scanner);
                     break;
                 case 3:
-                    AdminRepository.updateStudent();
+                    AdminRepository.updateStudent(scanner);
                     break;
                 case 4:
-                    AdminRepository.deleteStudent();
+                    AdminRepository.deleteStudent(scanner);
                     break;
                 case 5:
                     System.out.println("Enter a grade");
