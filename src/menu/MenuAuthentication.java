@@ -1,9 +1,7 @@
 package src.menu;
 import java.util.Scanner;
-
-
-import src.menu.MenuStudent;
-import src.menu.MenuAdmin;
+import menu.MenuAdmin;
+import menu.MenuStudent;
 
 public class MenuAuthentication {
     public void menuAuthentication(Scanner scanner){
@@ -40,3 +38,4 @@ public class MenuAuthentication {
         }
     }
 }
+
