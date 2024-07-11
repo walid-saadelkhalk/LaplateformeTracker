@@ -346,11 +346,4 @@ public class AdminRepository {
 
     
     
-    
-
-
-        // Méthode pour générer un ID étudiant
-    private static String generateStudentId(String firstName, String lastName) {
-        return firstName.substring(0, 1).toUpperCase() + lastName.toLowerCase();
-    }
 }
