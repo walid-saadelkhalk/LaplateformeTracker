@@ -47,8 +47,8 @@ public class MenuAdmin {
                 AdminRepository.getAllStudents();
                 break;
             case 8:
-                System.out.println("Goodbye!");
-                System.exit(0);
+                System.out.println("waddup");
+                continueAdminLoop = false;
                 break;
             default:
                 System.out.println("Invalid choice.");
