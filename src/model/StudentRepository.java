@@ -6,13 +6,14 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class StudentRepositories {
+public class StudentRepository {
 
     // Select student by ID
     public void selectStudentById(int studentId) {
         String sql = "SELECT * FROM Student WHERE ID = ?";
         try (Connection connection = Database.getConnection();
              PreparedStatement stmt = connection.prepareStatement(sql)) {
+
 
             stmt.setInt(1, studentId);
             ResultSet rs = stmt.executeQuery();

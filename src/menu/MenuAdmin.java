@@ -2,6 +2,7 @@ package src.menu;
 
 import java.util.Scanner;
 import src.controler.Authentication;
+import src.model.AdminRepository;
 
 public class MenuAdmin {
     public void menuAdmin(Scanner scanner) {
@@ -30,12 +31,15 @@ public class MenuAdmin {
                         break;
                     case 2:
                         Authentication.createAccount(scanner);
+                        System.out.println("Student created successfully!");
                         break;
                     case 3:
-                        System.out.println("Update a student");
+                        AdminRepository.updateStudent(scanner);
+                        System.out.println("Student updated successfully!");
                         break;
                     case 4:
-                        System.out.println("Delete a student");
+                        AdminRepository.deleteStudent(scanner);
+                        System.out.println("Student deleted successfully!");
                         break;
                     case 5:
                         System.out.println("Enter a grade");
