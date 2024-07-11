@@ -1,3 +1,6 @@
+package src;
+
+
 import src.menu.MenuAuthentication;
 import java.util.Scanner;
 
