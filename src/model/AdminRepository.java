@@ -1,4 +1,3 @@
-
 package src.model;
 
 import java.sql.Connection;
@@ -6,39 +5,95 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Scanner;
 
 public class AdminRepository {
 
-    public void createAccount(String firstName, String lastName, int age, String email, String password) {
-        String sql = "INSERT INTO Student (First_name, Last_name, Age, ID_student, ID_gradebook, Mail, Password) VALUES (?, ?, ?, ?, ?, ?, ?)";
-        try (Connection connection = Database.getConnection();
-             PreparedStatement stmt = connection.prepareStatement(sql)) {
-                
-    
-            
-            String studentId = generateStudentId(firstName, lastName);
-    
+    // Méthode pour créer un compte étudiant
+    public static void createAccount() {
+        Scanner scanner = new Scanner(System.in);
+        
+        System.out.println("Enter first name:");
+        String firstName = scanner.nextLine();
+        
+        System.out.println("Enter last name:");
+        String lastName = scanner.nextLine();
+        
+        System.out.println("Enter age:");
+        int age = scanner.nextInt();
+        scanner.nextLine(); 
+        
+        System.out.println("Enter email:");
+        String email = scanner.nextLine();
+        
+        System.out.println("Enter password:");
+        String password = scanner.nextLine();
+        
+        scanner.close();
+        
+        Connection connection = null;
+        PreparedStatement stmt = null;
+        
+        try {
+            connection = Database.getConnection();
+            String sql = "INSERT INTO Student (First_name, Last_name, Age, ID_student, ID_gradebook, Mail, Password) VALUES (?, ?, ?, ?, ?, ?, ?)";
+            stmt = connection.prepareStatement(sql);
             stmt.setString(1, firstName);
             stmt.setString(2, lastName);
             stmt.setInt(3, age);
-            stmt.setString(4, studentId);
+            stmt.setString(4, generateStudentId(firstName, lastName)); 
             stmt.setInt(5, 1); 
             stmt.setString(6, email);
             stmt.setString(7, password);
-    
+            
             int rowsAffected = stmt.executeUpdate();
             if (rowsAffected > 0) {
-                System.out.println("Student inserted successfully!");
+                System.out.println("Student registered successfully!");
             } else {
-                System.out.println("Failed to insert student.");
+                System.out.println("Failed to register student.");
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                if (stmt != null) {
+                    stmt.close();
+                }
+                if (connection != null) {
+                    connection.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 
-    // Update student information
-    public void updateStudent(int studentId, String firstName, String lastName, int age, String email, String password) {
+    // Méthode pour mettre à jour un étudiant
+    public static void updateStudent() {
+        Scanner scanner = new Scanner(System.in);
+        
+        System.out.println("Enter student ID to update:");
+        int studentId = scanner.nextInt();
+        scanner.nextLine(); // Consume newline
+        
+        System.out.println("Enter new first name:");
+        String firstName = scanner.nextLine();
+        
+        System.out.println("Enter new last name:");
+        String lastName = scanner.nextLine();
+        
+        System.out.println("Enter new age:");
+        int age = scanner.nextInt();
+        scanner.nextLine(); // Consume newline
+        
+        System.out.println("Enter new email:");
+        String email = scanner.nextLine();
+        
+        System.out.println("Enter new password:");
+        String password = scanner.nextLine();
+        
+        scanner.close();
+
         String sql = "UPDATE Student SET First_name = ?, Last_name = ?, Age = ?, Mail = ?, Password = ? WHERE ID = ?";
         try (Connection connection = Database.getConnection();
              PreparedStatement stmt = connection.prepareStatement(sql)) {
@@ -61,8 +116,16 @@ public class AdminRepository {
         }
     }
 
-    // Delete a student
-    public void deleteStudent(int studentId) {
+    // Méthode pour supprimer un étudiant
+    public static void deleteStudent() {
+        Scanner scanner = new Scanner(System.in);
+        
+        System.out.println("Enter student ID to delete:");
+        int studentId = scanner.nextInt();
+        scanner.nextLine(); // Consume newline
+        
+        scanner.close();
+
         String sql = "DELETE FROM Student WHERE ID = ?";
         try (Connection connection = Database.getConnection();
              PreparedStatement stmt = connection.prepareStatement(sql)) {
@@ -80,8 +143,8 @@ public class AdminRepository {
         }
     }
 
-    // Get all students
-    public void getAllStudents() {
+    // Méthode pour récupérer tous les étudiants
+    public static void getAllStudents() {
         String sql = "SELECT * FROM Student";
         try (Connection connection = Database.getConnection();
              Statement stmt = connection.createStatement();
@@ -101,8 +164,16 @@ public class AdminRepository {
         }
     }
 
-    // Search for a student by ID
-    public void searchStudentById(int studentId) {
+    // Méthode pour rechercher un étudiant par ID
+    public static void searchStudentById() {
+        Scanner scanner = new Scanner(System.in);
+        
+        System.out.println("Enter student ID to search:");
+        int studentId = scanner.nextInt();
+        scanner.nextLine(); // Consume newline
+        
+        scanner.close();
+
         String sql = "SELECT * FROM Student WHERE ID = ?";
         try (Connection connection = Database.getConnection();
              PreparedStatement stmt = connection.prepareStatement(sql)) {
@@ -126,8 +197,8 @@ public class AdminRepository {
         }
     }
 
-    // Generate student ID (example method)
-    private String generateStudentId(String firstName, String lastName) {
+    // Méthode pour générer un ID étudiant
+    private static String generateStudentId(String firstName, String lastName) {
         return firstName.substring(0, 1).toUpperCase() + lastName.toLowerCase();
     }
 }

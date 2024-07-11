@@ -1,12 +1,11 @@
 package src.menu;
 
 import src.model.AdminRepository;
-import src.controler.Authentication;
 import java.util.Scanner;
 
 public class MenuAdmin {
     public void menuAdmin() {
-        AdminRepository adminRepo = new AdminRepository();
+        AdminRepository AdminRepository = new AdminRepository();
         Scanner scanner = new Scanner(System.in);
 
         System.out.println("WELCOME ADMIN ANDERSON!\n");
@@ -26,34 +25,16 @@ public class MenuAdmin {
 
         switch (adminChoice) {
             case 1:
-                System.out.println("Enter student ID to search:");
-                int searchId = scanner.nextInt();
-                adminRepo.searchStudentById(searchId);
+                AdminRepository.searchStudentById();
                 break;
             case 2:
-                Authentication.createAccount();
+                AdminRepository.createAccount();
                 break;
             case 3:
-                System.out.println("Enter student ID to update:");
-                int updateId = scanner.nextInt();
-                scanner.nextLine(); // Consume newline
-                System.out.println("Enter new first name:");
-                String newFirstName = scanner.nextLine();
-                System.out.println("Enter new last name:");
-                String newLastName = scanner.nextLine();
-                System.out.println("Enter new age:");
-                int newAge = scanner.nextInt();
-                scanner.nextLine(); // Consume newline
-                System.out.println("Enter new email:");
-                String newEmail = scanner.nextLine();
-                System.out.println("Enter new password:");
-                String newPassword = scanner.nextLine();
-                adminRepo.updateStudent(updateId, newFirstName, newLastName, newAge, newEmail, newPassword);
+                AdminRepository.updateStudent();
                 break;
             case 4:
-                System.out.println("Enter student ID to delete:");
-                int deleteId = scanner.nextInt();
-                adminRepo.deleteStudent(deleteId);
+                AdminRepository.deleteStudent();
                 break;
             case 5:
                 System.out.println("Enter a grade (Feature not yet implemented)");
@@ -62,7 +43,7 @@ public class MenuAdmin {
                 System.out.println("See classes (Feature not yet implemented)");
                 break;
             case 7:
-                adminRepo.getAllStudents();
+                AdminRepository.getAllStudents();
                 break;
             case 8:
                 System.out.println("Goodbye!");
