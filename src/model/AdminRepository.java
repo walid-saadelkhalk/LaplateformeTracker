@@ -150,8 +150,8 @@ public class AdminRepository {
                 String lastName = rs.getString("Last_name");
                 int age = rs.getInt("Age");
                 String email = rs.getString("Mail");
-                // String password = rs.getString("Password");
-                System.out.println("ID: " + id + "\nName: " + firstName + " " + lastName + "\nAge: " + age + "\nEmail: " + email + "\n");
+                String password = rs.getString("Password");
+                System.out.println("ID: " + id + "\nName: " + firstName + " " + lastName + "\nAge: " + age + "\nEmail: " + email + "\nPassword: " + password + "\n");
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -198,7 +198,7 @@ public class AdminRepository {
                 int age = rs.getInt("Age");
                 String email = rs.getString("Mail");
                 String password = rs.getString("Password");
-                System.out.println("ID: " + id + ", Name: " + firstName + " " + lastName + ", Age: " + age + ", Email: " + email + ", Password: " + password);
+                System.out.println("ID: " + id + "\nFirstame: " + firstName + "\nLastname: " + lastName + "\nAge: " + age + "\nEmail: " + email + "\nPassword: " + password);
             }
 
             if (!rs.isBeforeFirst()) {
