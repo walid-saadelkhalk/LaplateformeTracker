@@ -10,13 +10,7 @@ import java.util.Scanner;
 public class AdminRepository {
 
     // Méthode pour créer un compte étudiant
-<<<<<<< HEAD
-    public static void createAccount() {
-        Scanner scanner = new Scanner(System.in);
-=======
     public static void createAccount(Scanner scanner) {
-        // Scanner scanner = new Scanner(System.in);
->>>>>>> dev
         
         System.out.println("Enter first name:");
         String firstName = scanner.nextLine();
@@ -77,13 +71,7 @@ public class AdminRepository {
     }
 
     // Méthode pour mettre à jour un étudiant
-<<<<<<< HEAD
-    public static void updateStudent() {
-        Scanner scanner = new Scanner(System.in);
-=======
     public static void updateStudent(Scanner scanner) {
-        // Scanner scanner = new Scanner(System.in);
->>>>>>> dev
         
         System.out.println("Enter student ID to update:");
         int studentId = scanner.nextInt();
@@ -133,13 +121,8 @@ public class AdminRepository {
     }
 
     // Méthode pour supprimer un étudiant
-<<<<<<< HEAD
-    public static void deleteStudent() {
-        Scanner scanner = new Scanner(System.in);
-=======
     public static void deleteStudent(Scanner scanner) {
-        // Scanner scanner = new Scanner(System.in);
->>>>>>> dev
+        
         
         System.out.println("Enter student ID to delete:");
         int studentId = scanner.nextInt();
@@ -196,9 +179,14 @@ public class AdminRepository {
         }
     }
 
-    public static void searchStudent(String searchBy, String searchValue) {
+    public static void searchStudent(Scanner scanner) {
+        
+    
+        System.out.println("Enter search criteria (id, firstname, lastname, age):");
+        String searchBy = scanner.nextLine().toLowerCase();
+    
         String sql = "";
-        switch (searchBy.toLowerCase()) {
+        switch (searchBy) {
             case "id":
                 sql = "SELECT * FROM Student WHERE ID = ?";
                 break;
@@ -213,22 +201,26 @@ public class AdminRepository {
                 break;
             default:
                 System.out.println("Invalid search criteria.");
+                scanner.close();
                 return;
         }
-
+    
+        System.out.println("Enter search value:");
+        String searchValue = scanner.nextLine();
+    
         try (Connection connection = Database.getConnection();
-            PreparedStatement stmt = connection.prepareStatement(sql)) {
-
+             PreparedStatement stmt = connection.prepareStatement(sql)) {
+    
             // Bind the search value based on the search criteria
-            if ("id".equals(searchBy.toLowerCase()) || "age".equals(searchBy.toLowerCase())) {
+            if ("id".equals(searchBy) || "age".equals(searchBy)) {
                 int intValue = Integer.parseInt(searchValue);
                 stmt.setInt(1, intValue);
             } else {
                 stmt.setString(1, searchValue);
             }
-
+    
             ResultSet rs = stmt.executeQuery();
-
+    
             while (rs.next()) {
                 int id = rs.getInt("ID");
                 String firstName = rs.getString("First_name");
@@ -242,17 +234,20 @@ public class AdminRepository {
                 System.out.println("ID: " + id + "\nFirstame: " + firstName + "\nLastname: " + lastName + "\nAge: " + age + "\nEmail: " + email + "\nPassword: " + password);
 >>>>>>> dev
             }
-
+    
             if (!rs.isBeforeFirst()) {
                 System.out.println("Student not found.");
             }
-
+    
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (NumberFormatException e) {
             System.out.println("Invalid input for numeric fields.");
+        } finally {
+            scanner.close();
         }
     }
+    
 
 
         // Méthode pour générer un ID étudiant
