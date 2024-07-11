@@ -8,7 +8,8 @@ LIB_JAR = $(LIB_DIR)/mysql-connector-j-9.0.0.jar
 SRC_FILES = Main.java \
 			$(SRC_DIR)/Mainloop.java \
             $(SRC_DIR)/model/Database.java \
-			$(SRC_DIR)/model/adminRepository.java \
+			$(SRC_DIR)/model/AdminRepository.java \
+			$(SRC_DIR)/model/StudentRepository.java \
             $(SRC_DIR)/controler/Authentication.java \
 			$(SRC_DIR)/menu/MenuAuthentication.java \
 			$(SRC_DIR)/menu/MenuAdmin.java \

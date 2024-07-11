@@ -66,9 +66,4 @@ public class Authentication {
     private static String generateStudentId(String firstName, String lastName) {
         return firstName.substring(0, 1).toUpperCase() + lastName.toLowerCase();
     }
-<<<<<<< HEAD
-    
-    
-=======
->>>>>>> dev
 }

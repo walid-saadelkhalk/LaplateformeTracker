@@ -1,9 +1,5 @@
 package src;
 
-<<<<<<< HEAD
-
-=======
->>>>>>> dev
 import src.menu.MenuAuthentication;
 import java.util.Scanner;
 

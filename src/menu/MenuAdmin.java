@@ -1,5 +1,4 @@
 package src.menu;
-<<<<<<< HEAD
 import java.util.Scanner; 
 import src.model.AdminRepository;
 
@@ -8,22 +7,12 @@ import src.model.AdminRepository;
  * It will prompt the admin to choose between different options.
  * It will then call the respective method from the Authentication class.
  */
-=======
-
-import java.util.Scanner;
-import src.controler.Authentication;
-import src.model.AdminRepository;
->>>>>>> dev
 
 public class MenuAdmin {
     public void menuAdmin(Scanner scanner) {
         boolean continueAdminLoop = true;
-<<<<<<< HEAD
         AdminRepository adminRepository = new AdminRepository();
         
-=======
-
->>>>>>> dev
         while (continueAdminLoop) {
             System.out.println("\nWELCOME ADMIN ANDERSON!");
             System.out.println("What do you want to do?");
@@ -37,60 +26,22 @@ public class MenuAdmin {
             System.out.println("8. Quit");
             System.out.println("Enter your choice:");
 
-<<<<<<< HEAD
-            int adminChoice = scanner.nextInt();
-            scanner.nextLine();
+            if (scanner.hasNextInt()) {
+                int adminChoice = scanner.nextInt();;
             boolean authenticationMan = true;
             
-            switch (adminChoice){
-                case 1:
-                    AdminRepository.searchStudent(scanner);
-                    break;
-                case 2:
-                    AdminRepository.createAccount(scanner);
-                    break;
-                case 3:
-                    AdminRepository.updateStudent(scanner);
-                    break;
-                case 4:
-                    AdminRepository.deleteStudent(scanner);
-                    break;
-                case 5:
-                    System.out.println("Enter a grade");
-                    break;
-                case 6:
-                    System.out.println("See classes");
-                    break;
-                case 7:
-                    AdminRepository.getAllStudents();
-                    break;
-                case 8:
-                System.out.println("waddup");
-                    continueAdminLoop = false;
-                    break;
-                default:
-                    System.out.println("Invalid choice.");
-                    break;
-=======
-            if (scanner.hasNextInt()) {
-                int adminChoice = scanner.nextInt();
-                scanner.nextLine();
-
-                switch (adminChoice) {
+                switch (adminChoice){
                     case 1:
-                        System.out.println("Search a student");
+                        AdminRepository.searchStudent(scanner);
                         break;
                     case 2:
-                        Authentication.createAccount(scanner);
-                        System.out.println("Student created successfully!");
+                        AdminRepository.createAccount(scanner);
                         break;
                     case 3:
                         AdminRepository.updateStudent(scanner);
-                        System.out.println("Student updated successfully!");
                         break;
                     case 4:
                         AdminRepository.deleteStudent(scanner);
-                        System.out.println("Student deleted successfully!");
                         break;
                     case 5:
                         System.out.println("Enter a grade");
@@ -99,11 +50,10 @@ public class MenuAdmin {
                         System.out.println("See classes");
                         break;
                     case 7:
-                    System.out.println("All students:\n");
                         AdminRepository.getAllStudents(scanner);
                         break;
                     case 8:
-                        System.out.println("waddup");
+                    System.out.println("waddup");
                         continueAdminLoop = false;
                         break;
                     default:
@@ -112,8 +62,7 @@ public class MenuAdmin {
                 }
             } else {
                 System.out.println("Invalid input. Please enter a number.");
-                scanner.nextLine(); 
->>>>>>> dev
+                scanner.nextLine();
             }
         }
     }
