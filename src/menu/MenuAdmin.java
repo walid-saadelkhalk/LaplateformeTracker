@@ -1,6 +1,7 @@
-package menu;
+package src.menu;
 import java.util.Scanner; 
 import src.controler.Authentication;
+import src.model.AdminRepository;
 
 /*
  * This class is responsible for the menu of the admin.
@@ -11,6 +12,7 @@ import src.controler.Authentication;
 public class MenuAdmin {
     public void menuAdmin(Scanner scanner){
         boolean continueAdminLoop = true;
+        AdminRepository adminRepository = new AdminRepository();
         
         while (continueAdminLoop) {
             System.out.println("\nWELCOME ADMIN ANDERSON!");
@@ -31,17 +33,17 @@ public class MenuAdmin {
             
             switch (adminChoice){
                 case 1:
-                    System.out.println("Search a student");
+                    System.out.println("incoming");
                     break;
                 case 2:
                     Authentication authentication = new Authentication();
                     authentication.createAccount();
                     break;
                 case 3:
-                    System.out.println("Update a student");
+                    AdminRepository.updateStudent();
                     break;
                 case 4:
-                    System.out.println("Delete a student");
+                    AdminRepository.deleteStudent();
                     break;
                 case 5:
                     System.out.println("Enter a grade");
@@ -50,7 +52,7 @@ public class MenuAdmin {
                     System.out.println("See classes");
                     break;
                 case 7:
-                    System.out.println("All students");
+                    AdminRepository.getAllStudents();
                     break;
                 case 8:
                 System.out.println("waddup");

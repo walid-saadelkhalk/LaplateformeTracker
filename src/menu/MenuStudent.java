@@ -1,5 +1,4 @@
 package src.menu;
-
 import java.util.Scanner;
 
 public class MenuStudent {
