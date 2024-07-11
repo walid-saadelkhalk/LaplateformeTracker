@@ -28,6 +28,7 @@ public class MenuAdmin {
 
             if (scanner.hasNextInt()) {
                 int adminChoice = scanner.nextInt();
+                scanner.nextLine();
             
                 switch (adminChoice){
                     case 1:
