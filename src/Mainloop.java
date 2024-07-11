@@ -1,51 +1,30 @@
-<<<<<<< HEAD
 package src;
 
 import src.menu.MenuAuthentication;
 import src.menu.MenuAdmin;
 import src.menu.MenuStudent;
-=======
-import src.menu.MenuAuthentication;
->>>>>>> dev
 import java.util.Scanner;
 
 public class Mainloop {
     public static void main(String[] args) {
-<<<<<<< HEAD
-        Scanner scanner = new Scanner(System.in);
-        while (true) {
-            System.out.println("WELCOME TO HARVARD UNIVERSITY!");
-            System.out.println("1. Go to authentication");
-            System.out.println("2. Admin menu");
-            System.out.println("3. Quit");
-            System.out.println("Enter your choice:");
-
-            try {
-=======
-        try (java.util.Scanner scanner = new Scanner(System.in)) {
+        try (Scanner scanner = new Scanner(System.in)) {
             while (true) {
                 System.out.println("\nWELCOME TO HARVARD UNIVERSITY!");
                 System.out.println("1. Go to authentication");
-                System.out.println("2. Quit");
+                System.out.println("2. Admin Menu");
+                System.out.println("3. Quit");
                 System.out.println("Enter your choice:");
-                
->>>>>>> dev
                 int choice = scanner.nextInt();
                 scanner.nextLine(); // Consume newline
 
                 switch (choice) {
                     case 1:
                         MenuAuthentication menuAuthentication = new MenuAuthentication();
-<<<<<<< HEAD
-                        menuAuthentication.menuAuthentication();
-                        break;
-=======
                         menuAuthentication.menuAuthentication(scanner);
-                        break;                        
->>>>>>> dev
+                        break;
                     case 2:
                         MenuAdmin menuAdmin = new MenuAdmin();
-                        menuAdmin.menuAdmin();
+                        menuAdmin.menuAdmin(scanner);
                         break;
                     case 3:
                         System.out.println("Goodbye!");
@@ -56,10 +35,9 @@ public class Mainloop {
                         System.out.println("Invalid choice.");
                         break;
                 }
-            } catch (java.util.NoSuchElementException e) {
-                System.out.println("Input error: " + e.getMessage());
-                break; // Exit the loop on input error
-            }
+            } // Add closing brace for the while loop
+        } catch (java.util.NoSuchElementException e) {
+            System.out.println("Input error: " + e.getMessage());
         }
     }
 }
