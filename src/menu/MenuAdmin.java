@@ -24,38 +24,34 @@ public class MenuAdmin {
             int adminChoice = scanner.nextInt();
             scanner.nextLine(); 
 
-            switch (adminChoice) {
-                case 1:
-                    System.out.println("Enter search criteria (id, firstname, lastname, age):");
-                    String searchBy = scanner.nextLine().toLowerCase();
-                    System.out.println("Enter search value:");
-                    String searchValue = scanner.nextLine();
-                    AdminRepository.searchStudent(searchBy, searchValue);
-                    break;
-                case 2:
-                    AdminRepository.createAccount();
-                    break;
-                case 3:
-                    AdminRepository.updateStudent();
-                    break;
-                case 4:
-                    AdminRepository.deleteStudent();
-                    break;
-                case 5:
-                    System.out.println("Enter a grade (Feature not yet implemented)");
-                    break;
-                case 6:
-                    System.out.println("See classes (Feature not yet implemented)");
-                    break;
-                case 7:
-                    AdminRepository.getAllStudents();
-                    break;
-                case 8:
-                    System.out.println("Goodbye!");
-                    continueAdminLoop = false;
-                    break;
-                default:
-                    System.out.println("Invalid choice.");
+        switch (adminChoice) {
+            case 1:
+                AdminRepository.searchStudentById();
+                break;
+            case 2:
+                AdminRepository.createAccount();
+                break;
+            case 3:
+                AdminRepository.updateStudent();
+                break;
+            case 4:
+                AdminRepository.deleteStudent();
+                break;
+            case 5:
+                System.out.println("Enter a grade (Feature not yet implemented)");
+                break;
+            case 6:
+                System.out.println("See classes (Feature not yet implemented)");
+                break;
+            case 7:
+                AdminRepository.getAllStudents();
+                break;
+            case 8:
+                System.out.println("waddup");
+                continueAdminLoop = false;
+                break;
+            default:
+                System.out.println("Invalid choice.");
             }
         }
     }
