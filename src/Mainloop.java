@@ -35,6 +35,7 @@ public class Mainloop {
                         break;
                     default:
                         System.out.println("Invalid choice.");
+                        break;
                 }
             } catch (java.util.NoSuchElementException e) {
                 System.out.println("Input error: " + e.getMessage());

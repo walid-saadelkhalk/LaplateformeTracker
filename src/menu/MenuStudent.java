@@ -3,22 +3,24 @@ package src.menu;
 import java.util.Scanner;
 
 public class MenuStudent {
-    public void menuStudent() {
-        System.out.println("WELCOME STUDENT ANDERSON!\n");
-        System.out.println("What do you want to do?");
-        System.out.println("1. Maths grades");
-        System.out.println("2. Physics grades");
-        System.out.println("3. English grades");
-        System.out.println("4. Gradebook");
-        System.out.println("5. Graphics");
-        System.out.println("6. Quit");
+    public void menuStudent(Scanner scanner){
 
-        Scanner scanner = new Scanner(System.in);
-        try {
+        boolean continueStudentLoop = true;
+        while (continueStudentLoop) {
+
+            System.out.println("\nWELCOME STUDENT ANDERSON!");
+            System.out.println("What do you want to do?");
+            System.out.println("1.Maths grades");
+            System.out.println("2.Physics grades");
+            System.out.println("3.English grades");
+            System.out.println("4. Gradebook");
+            System.out.println("5. Graphics");
+            System.out.println("6. Quit");
+
             int studentChoice = scanner.nextInt();
-            scanner.nextLine(); // Consume newline
+            scanner.nextLine();
 
-            switch (studentChoice) {
+            switch (studentChoice){
                 case 1:
                     System.out.println("Maths grades");
                     break;
@@ -35,13 +37,13 @@ public class MenuStudent {
                     System.out.println("Graphics");
                     break;
                 case 6:
-                    System.out.println("Goodbye!");
-                    return; // Exit the method
+                    System.out.println("wassup");
+                    continueStudentLoop = false;
+                    break;
                 default:
                     System.out.println("Invalid choice.");
+                    break;
             }
-        } finally {
-            scanner.close(); // Ensure the scanner is closed
         }
     }
 }

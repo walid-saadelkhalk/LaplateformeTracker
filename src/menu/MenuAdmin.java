@@ -1,27 +1,28 @@
 package src.menu;
-
+import java.util.Scanner; 
 import src.model.AdminRepository;
-import java.util.Scanner;
+
 
 public class MenuAdmin {
-    public void menuAdmin() {
-        AdminRepository AdminRepository = new AdminRepository();
-        Scanner scanner = new Scanner(System.in);
-
-        System.out.println("WELCOME ADMIN ANDERSON!\n");
-        System.out.println("What do you want to do?");
-        System.out.println("1. Search a student");
-        System.out.println("2. Create a student");
-        System.out.println("3. Update a student");
-        System.out.println("4. Delete a student");
-        System.out.println("5. Enter a grade");
-        System.out.println("6. See classes");
-        System.out.println("7. All students");
-        System.out.println("8. Quit");
-        System.out.println("Enter your choice:");
+    public void menuAdmin(Scanner scanner){
+        boolean continueAdminLoop = true;
+        
+        while (continueAdminLoop) {
+            System.out.println("\nWELCOME ADMIN ANDERSON!");
+            System.out.println("What do you want to do?");
+            System.out.println("1. Search a student");
+            System.out.println("2. Create a student");
+            System.out.println("3. Update a student");
+            System.out.println("4. Delete a student");
+            System.out.println("5. Enter a grade");
+            System.out.println("6. See classes");
+            System.out.println("7. All students");
+            System.out.println("8. Quit");
+            System.out.println("Enter your choice:");
 
         int adminChoice = scanner.nextInt();
-        scanner.nextLine(); // Consume newline
+        scanner.nextLine();
+        boolean authenticationMan = true;
 
         switch (adminChoice) {
             case 1:
@@ -51,7 +52,7 @@ public class MenuAdmin {
                 break;
             default:
                 System.out.println("Invalid choice.");
+            }
         }
-        scanner.close();
-    }
+    }   
 }
