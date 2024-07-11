@@ -1,7 +1,9 @@
 package src.menu;
+
 import java.util.Scanner;
 import src.menu.MenuAdmin;
 import src.menu.MenuStudent;
+import src.model.Connecting;
 
 public class MenuAuthentication {
     public void menuAuthentication(Scanner scanner){
@@ -20,12 +22,39 @@ public class MenuAuthentication {
             
             switch (authentication) {
                 case 1:
-                    MenuAdmin menuAdmin = new MenuAdmin();
-                    menuAdmin.menuAdmin(scanner);
-                    break; 
+                    boolean authenticatedAdmin = false;
+                    int attemptsAdmin = 0;
+
+                    while (!authenticatedAdmin && attemptsAdmin < 3) {
+                        if (Connecting.AdminConnection(scanner)) {
+                            MenuAdmin menuAdmin = new MenuAdmin();
+                            menuAdmin.menuAdmin(scanner);
+                            authenticatedAdmin = true;
+                        } else {
+                            attemptsAdmin++;
+                            System.out.println("Connection failed. Please try again. Attempt " + attemptsAdmin + " of 3.");
+                        }
+                    }
+                    if (!authenticatedAdmin) {
+                        System.out.println("Too many failed attempts. Returning to authentication menu.");
+                    }
+                    break;
                 case 2:
-                    MenuStudent menuStudent = new MenuStudent();
-                    menuStudent.menuStudent(scanner);
+                    boolean authenticatedStudent = false;
+                    int attemptsStudent = 0;
+                    while (!authenticatedStudent && attemptsStudent < 3) {
+                        if (Connecting.StudentConnection(scanner)) {
+                            MenuStudent menuStudent = new MenuStudent();
+                            menuStudent.menuStudent(scanner);
+                            authenticatedStudent = true;
+                        } else {
+                            attemptsStudent++;
+                            System.out.println("Connection failed. Please try again. Attempt " + attemptsStudent + " of 3.");
+                        }
+                    }
+                    if (!authenticatedStudent) {
+                        System.out.println("Too many failed attempts. Returning to authentication menu.");
+                    }
                     break;
                 case 3:
                     System.out.println("Goodbyeeeeee!");
@@ -38,4 +67,3 @@ public class MenuAuthentication {
         }
     }
 }
-
