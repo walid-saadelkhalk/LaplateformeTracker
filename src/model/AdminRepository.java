@@ -1,11 +1,14 @@
 package src.model;
 
+import java.io.Console;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class AdminRepository {
 
@@ -16,23 +19,60 @@ public class AdminRepository {
         
         System.out.println("Enter last name:");
         String lastName = scanner.nextLine();
-        
-        System.out.println("Enter age:");
-        int age = scanner.nextInt();
+
+        int age = -1;
+        while (age < 0) {
+            System.out.println("Enter age (must be a positive integer):");
+            if (scanner.hasNextInt()) {
+                age = scanner.nextInt();
+                if (age < 0) {
+                    System.out.println("Age must be a positive integer.");
+                }
+            } else {
+                System.out.println("Invalid input. Please enter a valid age.");
+                scanner.next(); // Consume invalid input
+            }
+        }
         scanner.nextLine(); // Consume newline
-        
+
         System.out.println("Enter student ID:");
         String studentId = scanner.nextLine();
         
-        System.out.println("Enter gradebook ID:");
-        int gradebookId = scanner.nextInt();
+        int gradebookId = -1;
+        while (gradebookId < 0) {
+            System.out.println("Enter gradebook ID (must be a positive integer):");
+            if (scanner.hasNextInt()) {
+                gradebookId = scanner.nextInt();
+                if (gradebookId < 0) {
+                    System.out.println("Gradebook ID must be a positive integer.");
+                }
+            } else {
+                System.out.println("Invalid input. Please enter a valid gradebook ID.");
+                scanner.next(); // Consume invalid input
+            }
+        }
         scanner.nextLine(); // Consume newline
-        
-        System.out.println("Enter email:");
-        String email = scanner.nextLine();
-        
-        System.out.println("Enter password:");
-        String password = scanner.nextLine();
+
+        String email;
+        while (true) {
+            System.out.println("Enter email (must end with @harvard.com):");
+            email = scanner.nextLine();
+            if (email.endsWith("@harvard.com")) {
+                break;
+            } else {
+                System.out.println("Invalid email. Please ensure it ends with @harvard.com.");
+            }
+        }
+
+        String password;
+        while (true) {
+            password = readPassword("Enter password (minimum 8 characters, at least one special character, and one uppercase letter):");
+            if (validatePassword(password)) {
+                break;
+            } else {
+                System.out.println("Invalid password. Please ensure it meets the criteria.");
+            }
+        }
 
         String insertStudentSql = "INSERT INTO Student (First_name, Last_name, Age, ID_student, ID_gradebook, Mail, Password) VALUES (?, ?, ?, ?, ?, ?, ?)";
         String insertGradeBookSql = "INSERT INTO Grade_book (ID_student) VALUES (?)";
@@ -64,13 +104,12 @@ public class AdminRepository {
             }
 
         } catch (SQLException e) {
+            System.out.println("An error occurred while creating the student account or grade book entry.");
             e.printStackTrace();
         }
     }
 
-    // Méthode pour mettre à jour un étudiant
     public static void updateStudent(Scanner scanner) {
-        
         System.out.println("Enter student ID to update:");
         int studentId = scanner.nextInt();
         scanner.nextLine(); // Consume newline
@@ -80,16 +119,42 @@ public class AdminRepository {
         
         System.out.println("Enter new last name:");
         String lastName = scanner.nextLine();
-        
-        System.out.println("Enter new age:");
-        int age = scanner.nextInt();
+
+        int age = -1;
+        while (age < 0) {
+            System.out.println("Enter new age (must be a positive integer):");
+            if (scanner.hasNextInt()) {
+                age = scanner.nextInt();
+                if (age < 0) {
+                    System.out.println("Age must be a positive integer.");
+                }
+            } else {
+                System.out.println("Invalid input. Please enter a valid age.");
+                scanner.next(); // Consume invalid input
+            }
+        }
         scanner.nextLine(); // Consume newline
-        
-        System.out.println("Enter new email:");
-        String email = scanner.nextLine();
-        
-        System.out.println("Enter new password:");
-        String password = scanner.nextLine();
+
+        String email;
+        while (true) {
+            System.out.println("Enter new email (must end with @harvard.com):");
+            email = scanner.nextLine();
+            if (email.endsWith("@harvard.com")) {
+                break;
+            } else {
+                System.out.println("Invalid email. Please ensure it ends with @harvard.com.");
+            }
+        }
+
+        String password;
+        while (true) {
+            password = readPassword("Enter new password (minimum 8 characters, at least one special character, and one uppercase letter):");
+            if (validatePassword(password)) {
+                break;
+            } else {
+                System.out.println("Invalid password. Please ensure it meets the criteria.");
+            }
+        }
 
         String sql = "UPDATE Student SET First_name = ?, Last_name = ?, Age = ?, Mail = ?, Password = ? WHERE ID = ?";
         try (Connection connection = Database.getConnection();
@@ -109,8 +174,32 @@ public class AdminRepository {
                 System.out.println("Failed to update student.");
             }
         } catch (SQLException e) {
+            System.out.println("An error occurred while updating the student.");
             e.printStackTrace();
         }
+    }
+ 
+
+    private static String readPassword(String prompt) {
+        Console console = System.console();
+        if (console == null) {
+            Scanner scanner = new Scanner(System.in);
+            System.out.println(prompt);
+            return scanner.nextLine();
+        }
+        char[] passwordArray = console.readPassword(prompt);
+        return new String(passwordArray);
+    }
+
+    private static boolean validatePassword(String password) {
+        if (password.length() < 8) {
+            return false;
+        }
+        Pattern specialCharPattern = Pattern.compile("[^a-z0-9 ]", Pattern.CASE_INSENSITIVE);
+        Pattern upperCasePattern = Pattern.compile("[A-Z ]");
+        Matcher hasSpecial = specialCharPattern.matcher(password);
+        Matcher hasUpperCase = upperCasePattern.matcher(password);
+        return hasSpecial.find() && hasUpperCase.find();
     }
 
     // Méthode pour supprimer un étudiant
@@ -160,8 +249,6 @@ public class AdminRepository {
     }
 
     public static void searchStudent(Scanner scanner) {
-        
-    
         System.out.println("Enter search criteria (id, firstname, lastname, age):");
         String searchBy = scanner.nextLine().toLowerCase();
     
@@ -200,7 +287,10 @@ public class AdminRepository {
     
             ResultSet rs = stmt.executeQuery();
     
+            boolean found = false; // Flag to check if any results were found
+    
             while (rs.next()) {
+                found = true; // Set flag to true if we find any results
                 int id = rs.getInt("ID");
                 String firstName = rs.getString("First_name");
                 String lastName = rs.getString("Last_name");
@@ -210,7 +300,7 @@ public class AdminRepository {
                 System.out.println("ID: " + id + "\nFirstame: " + firstName + "\nLastname: " + lastName + "\nAge: " + age + "\nEmail: " + email + "\nPassword: " + password);
             }
     
-            if (!rs.isBeforeFirst()) {
+            if (!found) {
                 System.out.println("Student not found.");
             }
     
@@ -218,11 +308,9 @@ public class AdminRepository {
             e.printStackTrace();
         } catch (NumberFormatException e) {
             System.out.println("Invalid input for numeric fields.");
-        } 
-        // finally {
-        // //     scanner.close();
-        // // }
+        }
     }
+    
 
     public static void addGrade(Scanner scanner) {
         System.out.println("Enter student ID:");
