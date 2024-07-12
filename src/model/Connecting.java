@@ -23,6 +23,7 @@ public class Connecting {
         String password = readPasswordWithAsterisks(console);
 
         return authenticateUser(mail, password, "Student");
+        
     }
 
     public static boolean AdminConnection(Scanner scanner) {
