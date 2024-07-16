@@ -18,16 +18,21 @@ public class MenuAuthentication {
             System.out.println("Enter your authentication type:");
 
             if (scanner.hasNextInt()) {
-            int authentication = scanner.nextInt();
-            scanner.nextLine();
-            
+                int authentication = scanner.nextInt();
+                scanner.nextLine();
+                
                 switch (authentication) {
                     case 1:
                         boolean authenticatedAdmin = false;
                         int attemptsAdmin = 0;
 
                         while (!authenticatedAdmin && attemptsAdmin < 3) {
-                            if (Connecting.AdminConnection(scanner)) {
+                            System.out.println("Enter your mail: ");
+                            String mail = scanner.nextLine();
+                            System.out.print("Enter your password: ");
+                            String password = scanner.nextLine();
+
+                            if (Connecting.AdminConnection(scanner, mail, password)) {
                                 MenuAdmin menuAdmin = new MenuAdmin();
                                 menuAdmin.menuAdmin(scanner);
                                 authenticatedAdmin = true;
@@ -43,8 +48,14 @@ public class MenuAuthentication {
                     case 2:
                         boolean authenticatedStudent = false;
                         int attemptsStudent = 0;
+
                         while (!authenticatedStudent && attemptsStudent < 3) {
-                            if (Connecting.StudentConnection(scanner)) {
+                            System.out.println("Enter your mail: ");
+                            String mail = scanner.nextLine();
+                            System.out.print("Enter your password: ");
+                            String password = scanner.nextLine();
+
+                            if (Connecting.StudentConnection(scanner, mail, password)) {
                                 MenuStudent menuStudent = new MenuStudent();
                                 menuStudent.menuStudent(scanner);
                                 authenticatedStudent = true;

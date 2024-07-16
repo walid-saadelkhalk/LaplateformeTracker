@@ -1,0 +1,47 @@
+/* Style pour VBox */
+.vbox {
+    -fx-background-color: #A51C30;
+}
+
+
+/* Style pour GridPane */
+.grid-pane {
+    -fx-background-color: #A51C30;
+}
+
+/* Style pour les Labels */
+.label {
+    -fx-font-size: 25px;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 10px;
+
+}
+
+#title-label {
+    -fx-font-size: 60px; 
+    -fx-text-fill: #FFFFFF; 
+    -fx-background-color: #A51C30; 
+    -fx-padding: 10px; 
+    -fx-alignment: center;
+}
+
+
+/* Style pour les TextFields et PasswordFields */
+.text-field, .password-field {
+    -fx-font-size: 16px;
+    -fx-pref-height: 30px;
+    -fx-pref-width: 400px;
+}
+
+/* Style pour les Buttons */
+.button {
+    -fx-font-size: 16px;
+    -fx-pref-width: 150px;
+    -fx-pref-height: 40px;
+    -fx-background-color: #A51C30;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-border-radius: 5px;
+    -fx-border-color: white;
+}
