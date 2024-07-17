@@ -6,6 +6,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Scanner;
 import java.io.Console;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 public class Connecting {
 
@@ -23,7 +25,6 @@ public class Connecting {
         String password = readPasswordWithAsterisks(console);
 
         return authenticateUser(mail, password, "Student");
-        
     }
 
     public static boolean AdminConnection(Scanner scanner) {
@@ -48,15 +49,21 @@ public class Connecting {
 
         try {
             connection = Database.getConnection();
-            String sql = "SELECT * FROM " + userType + " WHERE Mail = ? AND Password = ?";
+            String sql = "SELECT * FROM " + userType + " WHERE Mail = ?";
             stmt = connection.prepareStatement(sql);
             stmt.setString(1, mail);
-            stmt.setString(2, password);
 
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
-                System.out.println("Connection successful!");
-                return true;
+                String storedHashedPassword = rs.getString("Password");
+                String hashedPassword = hashPassword(password);
+                if (hashedPassword.equals(storedHashedPassword)) {
+                    System.out.println("Connection successful!");
+                    return true;
+                } else {
+                    System.out.println("Invalid mail or password.");
+                    return false;
+                }
             } else {
                 System.out.println("Invalid mail or password.");
                 return false;
@@ -87,5 +94,22 @@ public class Connecting {
         }
         System.out.println();
         return password.toString();
+    }
+
+    // Méthode pour hacher un mot de passe en utilisant SHA-256
+    private static String hashPassword(String password) {
+        try {
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            byte[] hash = md.digest(password.getBytes());
+            StringBuilder hexString = new StringBuilder();
+            for (byte b : hash) {
+                String hex = Integer.toHexString(0xff & b);
+                if (hex.length() == 1) hexString.append('0');
+                hexString.append(hex);
+            }
+            return hexString.toString();
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException("Error hashing password", e);
+        }
     }
 }

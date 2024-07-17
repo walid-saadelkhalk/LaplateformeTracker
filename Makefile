@@ -11,6 +11,7 @@ SRC_FILES = Main.java \
 			$(SRC_DIR)/model/AdminRepository.java \
 			$(SRC_DIR)/model/StudentRepository.java \
 			$(SRC_DIR)/model/Connecting.java \
+			$(SRC_DIR)/model/PasswordHasher.java \
             $(SRC_DIR)/controler/Authentication.java \
 			$(SRC_DIR)/menu/MenuAuthentication.java \
 			$(SRC_DIR)/menu/MenuAdmin.java \
