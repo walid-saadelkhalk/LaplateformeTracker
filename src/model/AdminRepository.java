@@ -1,6 +1,8 @@
 package src.model;
 
 import java.io.Console;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -11,6 +13,7 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 
 public class AdminRepository {
 
@@ -215,58 +218,78 @@ public class AdminRepository {
     public static void addGrade(Scanner scanner) {
         System.out.println("Enter student ID:");
         String studentId = scanner.nextLine();
-
+    
         if (!studentExists(studentId)) {
             System.out.println("Student ID not found in the grade book.");
             return;
         }
-
+    
         System.out.println("Choose subject to add grade:");
         System.out.println("1. Math");
         System.out.println("2. Physics");
         System.out.println("3. English");
         int subjectChoice = scanner.nextInt();
         scanner.nextLine();
-
-        String subject = "";
+    
+        String subjectColumn = "";
         switch (subjectChoice) {
             case 1:
-                subject = "Math_grades";
+                subjectColumn = "Math_grades";
                 break;
             case 2:
-                subject = "Physics_grades";
+                subjectColumn = "Physics_grades";
                 break;
             case 3:
-                subject = "English_grades";
+                subjectColumn = "English_grades";
                 break;
             default:
                 System.out.println("Invalid subject choice.");
                 return;
         }
-
+    
         System.out.println("Enter grade:");
-        float grade = scanner.nextFloat();
+        float newGrade = scanner.nextFloat();
         scanner.nextLine();
-
-        String updateSql = "UPDATE Grade_book SET " + subject + " = ? WHERE ID_student = ?";
+    
+        // Step 1: Retrieve the existing grade from the database
+        String selectSql = "SELECT " + subjectColumn + " FROM Grade_book WHERE ID_student = ?";
+        String updateSql = "UPDATE Grade_book SET " + subjectColumn + " = ? WHERE ID_student = ?";
+        
         try (Connection connection = Database.getConnection();
+             PreparedStatement selectStmt = connection.prepareStatement(selectSql);
              PreparedStatement updateStmt = connection.prepareStatement(updateSql)) {
-
-            updateStmt.setFloat(1, grade);
+    
+            selectStmt.setString(1, studentId);
+            ResultSet rs = selectStmt.executeQuery();
+    
+            float existingGrade = 0;
+            if (rs.next()) {
+                existingGrade = rs.getFloat(subjectColumn);
+            }
+    
+            // Step 2: Calculate new average if needed (you need to implement this logic)
+            // Note: Implement logic to handle average calculation if necessary
+    
+            // Step 3: Update the existing grade with the new grade
+            float updatedGrade = existingGrade + newGrade;
+    
+            updateStmt.setFloat(1, updatedGrade);
             updateStmt.setString(2, studentId);
-
+    
             int rowsAffected = updateStmt.executeUpdate();
             if (rowsAffected > 0) {
                 System.out.println("Grade added successfully!");
-                updateAverageGrade(connection, studentId);
+                // Update average grade if necessary
+                // updateAverageGrade(connection, studentId);
             } else {
                 System.out.println("Failed to add grade. Student ID might be incorrect.");
             }
-
+    
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
+    
 
     private static void updateAverageGrade(Connection connection, String studentId) throws SQLException {
         String selectSql = "SELECT Math_grades, Physics_grades, English_grades FROM Grade_book WHERE ID_student = ?";
@@ -396,4 +419,76 @@ public class AdminRepository {
         Matcher hasUpperCase = upperCasePattern.matcher(password);
         return hasSpecial.find() && hasUpperCase.find();
     }
+
+
+    public static void exportStudentsToHTML() {
+        String htmlFilePath = "students.html";
+
+        String sql = "SELECT * FROM Student";
+
+        try (Connection connection = Database.getConnection();
+             Statement stmt = connection.createStatement();
+             ResultSet rs = stmt.executeQuery(sql);
+             FileWriter htmlWriter = new FileWriter(htmlFilePath)) {
+
+            htmlWriter.write("<html>\n<head>\n<title>Students List</title>\n</head>\n<body>\n");
+            htmlWriter.write("<h1>Students List</h1>\n<table border=\"1\">\n");
+            htmlWriter.write("<tr><th>ID</th><th>First Name</th><th>Last Name</th><th>Age</th><th>Email</th><th>Password</th></tr>\n");
+
+            while (rs.next()) {
+                int id = rs.getInt("ID");
+                String firstName = rs.getString("First_name");
+                String lastName = rs.getString("Last_name");
+                int age = rs.getInt("Age");
+                String email = rs.getString("Mail");
+                String password = rs.getString("Password");
+
+                htmlWriter.write("<tr><td>" + id + "</td><td>" + firstName + "</td><td>" + lastName + "</td><td>" + age + "</td><td>" + email + "</td><td>" + password + "</td></tr>\n");
+            }
+
+            htmlWriter.write("</table>\n</body>\n</html>");
+
+            System.out.println("HTML file exported successfully to: " + htmlFilePath);
+
+        } catch (SQLException | IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void exportStudentsToCSV() {
+        String csvFilePath = "students.csv";
+
+        String sql = "SELECT * FROM Student";
+
+        try (Connection connection = Database.getConnection();
+             Statement stmt = connection.createStatement();
+             ResultSet rs = stmt.executeQuery(sql);
+             FileWriter csvWriter = new FileWriter(csvFilePath)) {
+
+            // Write CSV header
+            csvWriter.append("ID,First_name,Last_name,Age,Email,Password\n");
+
+            // Write CSV rows
+            while (rs.next()) {
+                int id = rs.getInt("ID");
+                String firstName = rs.getString("First_name");
+                String lastName = rs.getString("Last_name");
+                int age = rs.getInt("Age");
+                String email = rs.getString("Mail");
+                String password = rs.getString("Password");
+
+                csvWriter.append(String.join(",", String.valueOf(id), firstName, lastName,
+                        String.valueOf(age), email, password));
+                csvWriter.append("\n");
+            }
+
+            System.out.println("CSV file exported successfully to: " + csvFilePath);
+
+        } catch (SQLException | IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    
 }
