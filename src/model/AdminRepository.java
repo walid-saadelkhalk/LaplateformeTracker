@@ -1,6 +1,8 @@
 package src.model;
 
 import java.io.Console;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -74,11 +76,11 @@ public class AdminRepository {
             }
         }
 
-        // Chiffrement des données
-        firstName = Crypto.encrypt(firstName);
-        lastName = Crypto.encrypt(lastName);
-        email = Crypto.encrypt(email);
-        password = Crypto.encrypt(password);
+        // Chiffrement ou hachage des données
+        String encryptedFirstName = Crypto.encrypt(firstName);
+        String encryptedLastName = Crypto.encrypt(lastName);
+        String encryptedEmail = Crypto.encrypt(email);
+        String hashedPassword = hashPassword(password);
 
         String insertStudentSql = "INSERT INTO Student (First_name, Last_name, Age, ID_student, ID_gradebook, Mail, Password) VALUES (?, ?, ?, ?, ?, ?, ?)";
         String insertGradeBookSql = "INSERT INTO Grade_book (ID_student) VALUES (?)";
@@ -88,13 +90,13 @@ public class AdminRepository {
              PreparedStatement insertGradeBookStmt = connection.prepareStatement(insertGradeBookSql)) {
 
             // Insert into Student table
-            insertStudentStmt.setString(1, firstName);
-            insertStudentStmt.setString(2, lastName);
+            insertStudentStmt.setString(1, encryptedFirstName);
+            insertStudentStmt.setString(2, encryptedLastName);
             insertStudentStmt.setInt(3, age);
             insertStudentStmt.setString(4, studentId);
             insertStudentStmt.setInt(5, gradebookId);
-            insertStudentStmt.setString(6, email);
-            insertStudentStmt.setString(7, password);
+            insertStudentStmt.setString(6, encryptedEmail);
+            insertStudentStmt.setString(7, hashedPassword);
 
             int studentRowsAffected = insertStudentStmt.executeUpdate();
 
@@ -162,15 +164,21 @@ public class AdminRepository {
             }
         }
 
+        // Chiffrement ou hachage des données
+        String encryptedFirstName = Crypto.encrypt(firstName);
+        String encryptedLastName = Crypto.encrypt(lastName);
+        String encryptedEmail = Crypto.encrypt(email);
+        String hashedPassword = hashPassword(password);
+
         String sql = "UPDATE Student SET First_name = ?, Last_name = ?, Age = ?, Mail = ?, Password = ? WHERE ID = ?";
         try (Connection connection = Database.getConnection();
              PreparedStatement stmt = connection.prepareStatement(sql)) {
 
-            stmt.setString(1, firstName);
-            stmt.setString(2, lastName);
+            stmt.setString(1, encryptedFirstName);
+            stmt.setString(2, encryptedLastName);
             stmt.setInt(3, age);
-            stmt.setString(4, email);
-            stmt.setString(5, password);
+            stmt.setString(4, encryptedEmail);
+            stmt.setString(5, hashedPassword);
             stmt.setInt(6, studentId);
 
             int rowsAffected = stmt.executeUpdate();
@@ -184,40 +192,9 @@ public class AdminRepository {
             e.printStackTrace();
         }
     }
- 
-
-    private static String readPassword(String prompt) {
-        Console console = System.console();
-        if (console == null) {
-            Scanner scanner = new Scanner(System.in);
-            System.out.println(prompt);
-            return scanner.nextLine();
-        }
-        char[] passwordArray = console.readPassword(prompt);
-        return new String(passwordArray);
-    }
-
-    private static boolean validatePassword(String password) {
-        if (password.length() < 8) {
-            return false;
-        }
-        // Pattern specialCharPattern = Pattern.compile("[^a-z0-9 ]", Pattern.CASE_INSENSITIVE);
-        Pattern lowerCasePattern = Pattern.compile("[a-z]");
-        Pattern upperCasePattern = Pattern.compile("[A-Z]");
-        Pattern digitPattern = Pattern.compile("[0-9]");
-        Pattern specialCharPattern = Pattern.compile("[^a-zA-Z0-9 ]");
-
-        Matcher hasLowerCase = lowerCasePattern.matcher(password);
-        Matcher hasUpperCase = upperCasePattern.matcher(password);
-        Matcher hasDigit = digitPattern.matcher(password);
-        Matcher hasSpecialChar = specialCharPattern.matcher(password);
-        return hasLowerCase.find() && hasUpperCase.find() && hasDigit.find() && hasSpecialChar.find();
-    }
 
     // Méthode pour supprimer un étudiant
     public static void deleteStudent(Scanner scanner) {
-        
-        
         System.out.println("Enter student ID to delete:");
         int studentId = scanner.nextInt();
         scanner.nextLine(); // Consume newline
@@ -323,8 +300,7 @@ public class AdminRepository {
                 String email = Crypto.decrypt(encryptedEmail);
                 String password = Crypto.decrypt(encryptedPassword);
 
-
-                System.out.println("ID: " + id + "\nFirstame: " + firstName + "\nLastname: " + lastName + "\nAge: " + age + "\nEmail: " + email + "\nPassword: " + password);
+                System.out.println("ID: " + id + "\nFirstname: " + firstName + "\nLastname: " + lastName + "\nAge: " + age + "\nEmail: " + email + "\nPassword: " + password);
             }
     
             if (!found) {
@@ -338,7 +314,6 @@ public class AdminRepository {
         }
     }
     
-
     public static void addGrade(Scanner scanner) {
         System.out.println("Enter student ID:");
         String studentId = scanner.nextLine(); // Assume ID_student is varchar
@@ -459,6 +434,47 @@ public class AdminRepository {
         }
     }
 
-    
-    
+    private static String readPassword(String prompt) {
+        Console console = System.console();
+        if (console == null) {
+            Scanner scanner = new Scanner(System.in);
+            System.out.println(prompt);
+            return scanner.nextLine();
+        }
+        char[] passwordArray = console.readPassword(prompt);
+        return new String(passwordArray);
+    }
+
+    private static boolean validatePassword(String password) {
+        if (password.length() < 8) {
+            return false;
+        }
+        Pattern lowerCasePattern = Pattern.compile("[a-z]");
+        Pattern upperCasePattern = Pattern.compile("[A-Z]");
+        Pattern digitPattern = Pattern.compile("[0-9]");
+        Pattern specialCharPattern = Pattern.compile("[^a-zA-Z0-9 ]");
+
+        Matcher hasLowerCase = lowerCasePattern.matcher(password);
+        Matcher hasUpperCase = upperCasePattern.matcher(password);
+        Matcher hasDigit = digitPattern.matcher(password);
+        Matcher hasSpecialChar = specialCharPattern.matcher(password);
+        return hasLowerCase.find() && hasUpperCase.find() && hasDigit.find() && hasSpecialChar.find();
+    }
+
+    // Méthode pour hacher un mot de passe en utilisant SHA-256
+    private static String hashPassword(String password) {
+        try {
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            byte[] hash = md.digest(password.getBytes());
+            StringBuilder hexString = new StringBuilder();
+            for (byte b : hash) {
+                String hex = Integer.toHexString(0xff & b);
+                if (hex.length() == 1) hexString.append('0');
+                hexString.append(hex);
+            }
+            return hexString.toString();
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException("Error hashing password", e);
+        }
+    }
 }

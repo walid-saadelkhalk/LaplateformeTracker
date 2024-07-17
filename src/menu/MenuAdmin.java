@@ -1,17 +1,15 @@
-// File: src/menu/MenuAdmin.java
-
 package src.menu;
 
 import java.util.Scanner;
 import src.model.AdminRepository;
+import src.model.User;
 
 public class MenuAdmin {
-    public void menuAdmin(Scanner scanner) {
+    public void menuAdmin(Scanner scanner, User user) {
         boolean continueAdminLoop = true;
-        // AdminRepository adminRepository = new AdminRepository();
         
         while (continueAdminLoop) {
-            System.out.println("\nWELCOME ADMIN ANDERSON!");
+            System.out.println("\nWELCOME to the ADMIN MENU " + user.getFirstName() + " " + user.getLastName() + " !");
             System.out.println("What do you want to do?");
             System.out.println("1. Search a student");
             System.out.println("2. Create a student");

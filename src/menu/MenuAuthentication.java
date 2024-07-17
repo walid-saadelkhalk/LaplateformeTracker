@@ -1,13 +1,11 @@
 package src.menu;
 
 import java.util.Scanner;
-import src.menu.MenuAdmin;
-import src.menu.MenuStudent;
 import src.model.Connecting;
+import src.model.User;
 
 public class MenuAuthentication {
-    public void menuAuthentication(Scanner scanner){
-
+    public void menuAuthentication(Scanner scanner) {
         boolean continueAuthenticationLoop = true;
 
         while (continueAuthenticationLoop) {
@@ -18,18 +16,19 @@ public class MenuAuthentication {
             System.out.println("Enter your authentication type:");
 
             if (scanner.hasNextInt()) {
-            int authentication = scanner.nextInt();
-            scanner.nextLine();
-            
+                int authentication = scanner.nextInt();
+                scanner.nextLine();
+
                 switch (authentication) {
                     case 1:
                         boolean authenticatedAdmin = false;
                         int attemptsAdmin = 0;
 
                         while (!authenticatedAdmin && attemptsAdmin < 3) {
-                            if (Connecting.AdminConnection(scanner)) {
+                            User adminUser = Connecting.AdminConnection(scanner);
+                            if (adminUser != null) {
                                 MenuAdmin menuAdmin = new MenuAdmin();
-                                menuAdmin.menuAdmin(scanner);
+                                menuAdmin.menuAdmin(scanner, adminUser);
                                 authenticatedAdmin = true;
                             } else {
                                 attemptsAdmin++;
@@ -43,10 +42,12 @@ public class MenuAuthentication {
                     case 2:
                         boolean authenticatedStudent = false;
                         int attemptsStudent = 0;
+
                         while (!authenticatedStudent && attemptsStudent < 3) {
-                            if (Connecting.StudentConnection(scanner)) {
+                            User studentUser = Connecting.StudentConnection(scanner);
+                            if (studentUser != null) {
                                 MenuStudent menuStudent = new MenuStudent();
-                                menuStudent.menuStudent(scanner);
+                                menuStudent.menuStudent(scanner, studentUser);
                                 authenticatedStudent = true;
                             } else {
                                 attemptsStudent++;

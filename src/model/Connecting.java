@@ -6,14 +6,16 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Scanner;
 import java.io.Console;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 public class Connecting {
 
-    public static boolean StudentConnection(Scanner scanner) {
+    public static User StudentConnection(Scanner scanner) {
         Console console = System.console();
         if (console == null) {
             System.out.println("No console available");
-            return false;
+            return null;
         }
 
         System.out.println("Enter your mail: ");
@@ -23,14 +25,13 @@ public class Connecting {
         String password = readPasswordWithAsterisks(console);
 
         return authenticateUser(mail, password, "Student");
-        
     }
 
-    public static boolean AdminConnection(Scanner scanner) {
+    public static User AdminConnection(Scanner scanner) {
         Console console = System.console();
         if (console == null) {
             System.out.println("No console available");
-            return false;
+            return null;
         }
 
         System.out.println("Enter your mail: ");
@@ -42,37 +43,41 @@ public class Connecting {
         return authenticateUser(mail, password, "Admin");
     }
 
-    private static boolean authenticateUser(String mail, String password, String userType) {
+    private static User authenticateUser(String mail, String password, String userType) {
         Connection connection = null;
         PreparedStatement stmt = null;
 
         try {
+            System.out.println("Authenticating user: " + mail + " as " + userType);  // Debugging line
             connection = Database.getConnection();
-            String sql = "SELECT * FROM " + userType + " WHERE Mail = ? AND Password = ?";
+            String sql = "SELECT * FROM " + userType + " WHERE Mail = ?";
             stmt = connection.prepareStatement(sql);
-    
-            if ("Admin".equalsIgnoreCase(userType)) {
-                stmt.setString(1, mail);
-                stmt.setString(2, password);
-            } else {
-            String decryptedMail = Crypto.encrypt(mail);
-            String decryptedPassword = Crypto.encrypt(password);
-
-            stmt.setString(1, decryptedMail);
-            stmt.setString(2, decryptedPassword);
-            }  
+            String encryptedMail = Crypto.encrypt(mail);  // Encrypt the email before querying
+            stmt.setString(1, encryptedMail);
 
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
-                System.out.println("Connection successful!");
-                return true;
+                String storedHashedPassword = rs.getString("Password");
+                String hashedPassword = hashPassword(password);
+                System.out.println("Stored hashed password: " + storedHashedPassword);  // Debugging line
+                System.out.println("Entered hashed password: " + hashedPassword);  // Debugging line
+
+                if (hashedPassword.equals(storedHashedPassword)) {
+                    System.out.println("Connection successful!");
+                    String firstName = Crypto.decrypt(rs.getString("First_name"));
+                    String lastName = Crypto.decrypt(rs.getString("Last_name"));
+                    return new User(firstName, lastName, mail);
+                } else {
+                    System.out.println("Invalid mail or password.");
+                    return null;
+                }
             } else {
                 System.out.println("Invalid mail or password.");
-                return false;
+                return null;
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            return false;
+            return null;
         } finally {
             try {
                 if (stmt != null) {
@@ -96,5 +101,22 @@ public class Connecting {
         }
         System.out.println();
         return password.toString();
+    }
+
+    // Méthode pour hacher un mot de passe en utilisant SHA-256
+    private static String hashPassword(String password) {
+        try {
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            byte[] hash = md.digest(password.getBytes());
+            StringBuilder hexString = new StringBuilder();
+            for (byte b : hash) {
+                String hex = Integer.toHexString(0xff & b);
+                if (hex.length() == 1) hexString.append('0');
+                hexString.append(hex);
+            }
+            return hexString.toString();
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException("Error hashing password", e);
+        }
     }
 }
