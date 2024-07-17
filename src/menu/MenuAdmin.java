@@ -7,10 +7,11 @@ import src.model.AdminRepository;
 
 public class MenuAdmin {
     public void menuAdmin(Scanner scanner) {
-        boolean continueAdminLoop = true;
-        // AdminRepository adminRepository = new AdminRepository();
+
         
+        boolean continueAdminLoop = true;
         while (continueAdminLoop) {
+
             System.out.println("\nWELCOME ADMIN ANDERSON!");
             System.out.println("What do you want to do?");
             System.out.println("1. Search a student");

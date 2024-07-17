@@ -6,6 +6,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -143,7 +145,7 @@ public class AdminRepository {
         }
     }
 
-    public static void searchStudent(Scanner scanner) {
+    public static List<String> searchStudent(Scanner scanner) {
         System.out.println("Enter search criteria (id, firstname, lastname, age):");
         String searchBy = scanner.nextLine().toLowerCase();
 
@@ -163,11 +165,13 @@ public class AdminRepository {
                 break;
             default:
                 System.out.println("Invalid search criteria.");
-                return;
+                return new ArrayList<>();
         }
 
         System.out.println("Enter search value:");
         String searchValue = scanner.nextLine();
+
+        List<String> students = new ArrayList<>();
 
         try (Connection connection = Database.getConnection();
              PreparedStatement stmt = connection.prepareStatement(sql)) {
@@ -181,29 +185,31 @@ public class AdminRepository {
 
             ResultSet rs = stmt.executeQuery();
 
-            boolean found = false;
-
             while (rs.next()) {
-                found = true;
                 int id = rs.getInt("ID");
                 String firstName = rs.getString("First_name");
                 String lastName = rs.getString("Last_name");
                 int age = rs.getInt("Age");
                 String email = rs.getString("Mail");
                 String password = rs.getString("Password");
-                System.out.println("ID: " + id + "\nFirst name: " + firstName + "\nLast name: " + lastName + "\nAge: " + age + "\nEmail: " + email + "\nPassword: " + password);
-                System.out.println("-----");
+
+                String studentInfo = "ID: " + id + "\nFirst name: " + firstName + "\nLast name: " + lastName +
+                        "\nAge: " + age + "\nEmail: " + email + "\nPassword: " + password;
+                students.add(studentInfo);
             }
 
-            if (!found) {
-                System.out.println("Student not found.");
+            if (students.isEmpty()) {
+                System.out.println("No students found matching the criteria.");
             }
 
         } catch (SQLException e) {
+            System.out.println("An error occurred while searching for students.");
             e.printStackTrace();
         } catch (NumberFormatException e) {
             System.out.println("Invalid input for numeric fields.");
         }
+
+        return students;
     }
 
     public static void addGrade(Scanner scanner) {
