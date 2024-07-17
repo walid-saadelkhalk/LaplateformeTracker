@@ -66,7 +66,7 @@ public class AdminRepository {
 
         String password;
         while (true) {
-            password = readPassword("Enter password (minimum 8 characters, at least one special character, and one uppercase letter):");
+            password = readPassword("Enter password (minimum 8 characters, at least one special character, one uppercase letter, one lowercase letter and one number):");
             if (validatePassword(password)) {
                 break;
             } else {
@@ -195,11 +195,17 @@ public class AdminRepository {
         if (password.length() < 8) {
             return false;
         }
-        Pattern specialCharPattern = Pattern.compile("[^a-z0-9 ]", Pattern.CASE_INSENSITIVE);
-        Pattern upperCasePattern = Pattern.compile("[A-Z ]");
-        Matcher hasSpecial = specialCharPattern.matcher(password);
+        // Pattern specialCharPattern = Pattern.compile("[^a-z0-9 ]", Pattern.CASE_INSENSITIVE);
+        Pattern lowerCasePattern = Pattern.compile("[a-z]");
+        Pattern upperCasePattern = Pattern.compile("[A-Z]");
+        Pattern digitPattern = Pattern.compile("[0-9]");
+        Pattern specialCharPattern = Pattern.compile("[^a-zA-Z0-9 ]");
+
+        Matcher hasLowerCase = lowerCasePattern.matcher(password);
         Matcher hasUpperCase = upperCasePattern.matcher(password);
-        return hasSpecial.find() && hasUpperCase.find();
+        Matcher hasDigit = digitPattern.matcher(password);
+        Matcher hasSpecialChar = specialCharPattern.matcher(password);
+        return hasLowerCase.find() && hasUpperCase.find() && hasDigit.find() && hasSpecialChar.find();
     }
 
     // Méthode pour supprimer un étudiant
