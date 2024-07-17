@@ -1,6 +1,8 @@
 package src.model;
 
 import java.io.Console;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -74,6 +76,9 @@ public class AdminRepository {
             }
         }
 
+        // Hacher le mot de passe
+        String hashedPassword = hashPassword(password);
+
         String insertStudentSql = "INSERT INTO Student (First_name, Last_name, Age, ID_student, ID_gradebook, Mail, Password) VALUES (?, ?, ?, ?, ?, ?, ?)";
         String insertGradeBookSql = "INSERT INTO Grade_book (ID_student) VALUES (?)";
 
@@ -88,7 +93,7 @@ public class AdminRepository {
             insertStudentStmt.setString(4, studentId);
             insertStudentStmt.setInt(5, gradebookId);
             insertStudentStmt.setString(6, email);
-            insertStudentStmt.setString(7, password);
+            insertStudentStmt.setString(7, hashedPassword);
 
             int studentRowsAffected = insertStudentStmt.executeUpdate();
 
@@ -156,6 +161,9 @@ public class AdminRepository {
             }
         }
 
+        // Hacher le mot de passe
+        String hashedPassword = hashPassword(password);
+
         String sql = "UPDATE Student SET First_name = ?, Last_name = ?, Age = ?, Mail = ?, Password = ? WHERE ID = ?";
         try (Connection connection = Database.getConnection();
              PreparedStatement stmt = connection.prepareStatement(sql)) {
@@ -164,7 +172,7 @@ public class AdminRepository {
             stmt.setString(2, lastName);
             stmt.setInt(3, age);
             stmt.setString(4, email);
-            stmt.setString(5, password);
+            stmt.setString(5, hashedPassword);
             stmt.setInt(6, studentId);
 
             int rowsAffected = stmt.executeUpdate();
@@ -178,7 +186,6 @@ public class AdminRepository {
             e.printStackTrace();
         }
     }
- 
 
     private static String readPassword(String prompt) {
         Console console = System.console();
@@ -206,6 +213,23 @@ public class AdminRepository {
         Matcher hasDigit = digitPattern.matcher(password);
         Matcher hasSpecialChar = specialCharPattern.matcher(password);
         return hasLowerCase.find() && hasUpperCase.find() && hasDigit.find() && hasSpecialChar.find();
+    }
+
+    // Méthode pour hacher un mot de passe en utilisant SHA-256
+    private static String hashPassword(String password) {
+        try {
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            byte[] hash = md.digest(password.getBytes());
+            StringBuilder hexString = new StringBuilder();
+            for (byte b : hash) {
+                String hex = Integer.toHexString(0xff & b);
+                if (hex.length() == 1) hexString.append('0');
+                hexString.append(hex);
+            }
+            return hexString.toString();
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException("Error hashing password", e);
+        }
     }
 
     // Méthode pour supprimer un étudiant
