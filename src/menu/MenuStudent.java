@@ -1,28 +1,27 @@
 package src.menu;
+
 import java.util.Scanner;
+import src.model.User;
 
 public class MenuStudent {
-    public void menuStudent(Scanner scanner){
-
+    public void menuStudent(Scanner scanner, User user) {
         boolean continueStudentLoop = true;
-        while (continueStudentLoop) {
 
-            System.out.println("\nWELCOME STUDENT ANDERSON!");
+        while (continueStudentLoop) {
+            System.out.println("\nWELCOME to the STUDENT MENU " + user.getFirstName() + " " + user.getLastName() + " !");
             System.out.println("What do you want to do?");
-            System.out.println("1.Maths grades");
-            System.out.println("2.Physics grades");
-            System.out.println("3.English grades");
+            System.out.println("1. Maths grades");
+            System.out.println("2. Physics grades");
+            System.out.println("3. English grades");
             System.out.println("4. Gradebook");
             System.out.println("5. Graphics");
             System.out.println("6. Quit");
-
-
 
             if (scanner.hasNextInt()) {
                 int studentChoice = scanner.nextInt();
                 scanner.nextLine();
 
-                switch (studentChoice){
+                switch (studentChoice) {
                     case 1:
                         System.out.println("Maths grades");
                         break;
@@ -48,7 +47,7 @@ public class MenuStudent {
                 }
             } else {
                 System.out.println("Invalid input. Please enter a number.");
-                scanner.nextLine(); 
+                scanner.nextLine();
             }
         }
     }

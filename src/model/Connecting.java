@@ -11,11 +11,11 @@ import java.security.NoSuchAlgorithmException;
 
 public class Connecting {
 
-    public static boolean StudentConnection(Scanner scanner) {
+    public static User StudentConnection(Scanner scanner) {
         Console console = System.console();
         if (console == null) {
             System.out.println("No console available");
-            return false;
+            return null;
         }
 
         System.out.println("Enter your mail: ");
@@ -27,11 +27,11 @@ public class Connecting {
         return authenticateUser(mail, password, "Student");
     }
 
-    public static boolean AdminConnection(Scanner scanner) {
+    public static User AdminConnection(Scanner scanner) {
         Console console = System.console();
         if (console == null) {
             System.out.println("No console available");
-            return false;
+            return null;
         }
 
         System.out.println("Enter your mail: ");
@@ -43,7 +43,7 @@ public class Connecting {
         return authenticateUser(mail, password, "Admin");
     }
 
-    private static boolean authenticateUser(String mail, String password, String userType) {
+    private static User authenticateUser(String mail, String password, String userType) {
         Connection connection = null;
         PreparedStatement stmt = null;
 
@@ -64,18 +64,20 @@ public class Connecting {
 
                 if (hashedPassword.equals(storedHashedPassword)) {
                     System.out.println("Connection successful!");
-                    return true;
+                    String firstName = Crypto.decrypt(rs.getString("First_name"));
+                    String lastName = Crypto.decrypt(rs.getString("Last_name"));
+                    return new User(firstName, lastName, mail);
                 } else {
                     System.out.println("Invalid mail or password.");
-                    return false;
+                    return null;
                 }
             } else {
                 System.out.println("Invalid mail or password.");
-                return false;
+                return null;
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            return false;
+            return null;
         } finally {
             try {
                 if (stmt != null) {
@@ -116,24 +118,5 @@ public class Connecting {
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException("Error hashing password", e);
         }
-    }
-
-    public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Enter your mail:");
-        String mail = scanner.nextLine();
-        System.out.println("Enter your password:");
-        String password = scanner.nextLine();
-        
-        String hashedPassword = hashPassword(password);
-        String encryptedMail = Crypto.encrypt(mail);  // Encrypt the email for the test
-        System.out.println("Testing with:");
-        System.out.println("Mail: " + mail);
-        System.out.println("Encrypted Mail: " + encryptedMail);
-        System.out.println("Password: " + password);
-        System.out.println("Hashed password: " + hashedPassword);
-
-        boolean isAuthenticated = authenticateUser(mail, password, "Student");
-        System.out.println("Authenticated: " + isAuthenticated);
     }
 }
