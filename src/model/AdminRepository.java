@@ -422,7 +422,7 @@ public class AdminRepository {
 
 
     public static void exportStudentsToHTML() {
-        String htmlFilePath = "students.html";
+        String htmlFilePath = "export/students.html";
 
         String sql = "SELECT * FROM Student";
 
@@ -456,7 +456,7 @@ public class AdminRepository {
     }
 
     public static void exportStudentsToCSV() {
-        String csvFilePath = "students.csv";
+        String csvFilePath = "export/students.csv";
 
         String sql = "SELECT * FROM Student";
 
