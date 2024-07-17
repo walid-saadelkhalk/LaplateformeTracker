@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.util.Scanner;
 
 import src.model.Database;
+import src.model.Crypto;
 
 public class Authentication {
 
@@ -26,6 +27,9 @@ public class Authentication {
         System.out.println("Enter password:");
         String password = scanner.nextLine();
 
+        // Chiffrer le mot de passe avant de l'insérer dans la base de données
+        String encryptedPassword = Crypto.encrypt(password);
+
         Connection connection = null;
         PreparedStatement stmt = null;
 
@@ -39,7 +43,7 @@ public class Authentication {
             stmt.setString(4, generateStudentId(firstName, lastName)); 
             stmt.setInt(5, 1); 
             stmt.setString(6, email);
-            stmt.setString(7, password);
+            stmt.setString(7, encryptedPassword);
 
             int rowsAffected = stmt.executeUpdate();
             if (rowsAffected > 0) {

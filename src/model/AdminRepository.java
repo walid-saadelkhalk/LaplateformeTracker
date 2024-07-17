@@ -74,6 +74,12 @@ public class AdminRepository {
             }
         }
 
+        // Chiffrement des données
+        firstName = Crypto.encrypt(firstName);
+        lastName = Crypto.encrypt(lastName);
+        email = Crypto.encrypt(email);
+        password = Crypto.encrypt(password);
+
         String insertStudentSql = "INSERT INTO Student (First_name, Last_name, Age, ID_student, ID_gradebook, Mail, Password) VALUES (?, ?, ?, ?, ?, ?, ?)";
         String insertGradeBookSql = "INSERT INTO Grade_book (ID_student) VALUES (?)";
 
@@ -242,11 +248,18 @@ public class AdminRepository {
 
             while (rs.next()) {
                 int id = rs.getInt("ID");
-                String firstName = rs.getString("First_name");
-                String lastName = rs.getString("Last_name");
+                String encryptedFirstName = rs.getString("First_name");
+                String encryptedLastName = rs.getString("Last_name");
                 int age = rs.getInt("Age");
-                String email = rs.getString("Mail");
-                String password = rs.getString("Password");
+                String encryptedEmail = rs.getString("Mail");
+                String encryptedPassword = rs.getString("Password");
+
+                // Déchiffrer les champs nécessaires
+                String firstName = Crypto.decrypt(encryptedFirstName);
+                String lastName = Crypto.decrypt(encryptedLastName);
+                String email = Crypto.decrypt(encryptedEmail);
+                String password = Crypto.decrypt(encryptedPassword);
+
                 System.out.println("ID: " + id + "\nName: " + firstName + " " + lastName + "\nAge: " + age + "\nEmail: " + email + "\nPassword: " + password + "\n");
             }
         } catch (SQLException e) {
@@ -298,11 +311,19 @@ public class AdminRepository {
             while (rs.next()) {
                 found = true; // Set flag to true if we find any results
                 int id = rs.getInt("ID");
-                String firstName = rs.getString("First_name");
-                String lastName = rs.getString("Last_name");
+                String encryptedFirstName = rs.getString("First_name");
+                String encryptedLastName = rs.getString("Last_name");
                 int age = rs.getInt("Age");
-                String email = rs.getString("Mail");
-                String password = rs.getString("Password");
+                String encryptedEmail = rs.getString("Mail");
+                String encryptedPassword = rs.getString("Password");
+    
+                // Déchiffrer les champs nécessaires
+                String firstName = Crypto.decrypt(encryptedFirstName);
+                String lastName = Crypto.decrypt(encryptedLastName);
+                String email = Crypto.decrypt(encryptedEmail);
+                String password = Crypto.decrypt(encryptedPassword);
+
+
                 System.out.println("ID: " + id + "\nFirstame: " + firstName + "\nLastname: " + lastName + "\nAge: " + age + "\nEmail: " + email + "\nPassword: " + password);
             }
     

@@ -50,8 +50,17 @@ public class Connecting {
             connection = Database.getConnection();
             String sql = "SELECT * FROM " + userType + " WHERE Mail = ? AND Password = ?";
             stmt = connection.prepareStatement(sql);
-            stmt.setString(1, mail);
-            stmt.setString(2, password);
+    
+            if ("Admin".equalsIgnoreCase(userType)) {
+                stmt.setString(1, mail);
+                stmt.setString(2, password);
+            } else {
+            String decryptedMail = Crypto.encrypt(mail);
+            String decryptedPassword = Crypto.encrypt(password);
+
+            stmt.setString(1, decryptedMail);
+            stmt.setString(2, decryptedPassword);
+            }  
 
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
