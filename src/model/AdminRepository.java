@@ -12,7 +12,6 @@ import java.util.regex.Pattern;
 
 public class AdminRepository {
 
-    // Méthode pour créer un compte étudiant
     public static void createAccount(Scanner scanner) {
         System.out.println("Enter first name:");
         String firstName = scanner.nextLine();
@@ -20,59 +19,16 @@ public class AdminRepository {
         System.out.println("Enter last name:");
         String lastName = scanner.nextLine();
 
-        int age = -1;
-        while (age < 0) {
-            System.out.println("Enter age (must be a positive integer):");
-            if (scanner.hasNextInt()) {
-                age = scanner.nextInt();
-                if (age < 0) {
-                    System.out.println("Age must be a positive integer.");
-                }
-            } else {
-                System.out.println("Invalid input. Please enter a valid age.");
-                scanner.next(); // Consume invalid input
-            }
-        }
-        scanner.nextLine(); // Consume newline
+        int age = getPositiveIntInput(scanner, "Enter age (must be a positive integer):");
 
         System.out.println("Enter student ID:");
         String studentId = scanner.nextLine();
         
-        int gradebookId = -1;
-        while (gradebookId < 0) {
-            System.out.println("Enter gradebook ID (must be a positive integer):");
-            if (scanner.hasNextInt()) {
-                gradebookId = scanner.nextInt();
-                if (gradebookId < 0) {
-                    System.out.println("Gradebook ID must be a positive integer.");
-                }
-            } else {
-                System.out.println("Invalid input. Please enter a valid gradebook ID.");
-                scanner.next(); // Consume invalid input
-            }
-        }
-        scanner.nextLine(); // Consume newline
+        int gradebookId = getPositiveIntInput(scanner, "Enter gradebook ID (must be a positive integer):");
 
-        String email;
-        while (true) {
-            System.out.println("Enter email (must end with @harvard.com):");
-            email = scanner.nextLine();
-            if (email.endsWith("@harvard.com")) {
-                break;
-            } else {
-                System.out.println("Invalid email. Please ensure it ends with @harvard.com.");
-            }
-        }
+        String email = getEmailInput(scanner, "Enter email (must end with @harvard.com):");
 
-        String password;
-        while (true) {
-            password = readPassword("Enter password (minimum 8 characters, at least one special character, and one uppercase letter):");
-            if (validatePassword(password)) {
-                break;
-            } else {
-                System.out.println("Invalid password. Please ensure it meets the criteria.");
-            }
-        }
+        String password = getPasswordInput("Enter password (minimum 8 characters, at least one special character, and one uppercase letter):");
 
         String insertStudentSql = "INSERT INTO Student (First_name, Last_name, Age, ID_student, ID_gradebook, Mail, Password) VALUES (?, ?, ?, ?, ?, ?, ?)";
         String insertGradeBookSql = "INSERT INTO Grade_book (ID_student) VALUES (?)";
@@ -81,7 +37,6 @@ public class AdminRepository {
              PreparedStatement insertStudentStmt = connection.prepareStatement(insertStudentSql);
              PreparedStatement insertGradeBookStmt = connection.prepareStatement(insertGradeBookSql)) {
 
-            // Insert into Student table
             insertStudentStmt.setString(1, firstName);
             insertStudentStmt.setString(2, lastName);
             insertStudentStmt.setInt(3, age);
@@ -92,7 +47,6 @@ public class AdminRepository {
 
             int studentRowsAffected = insertStudentStmt.executeUpdate();
 
-            // Insert into Grade_book table
             insertGradeBookStmt.setString(1, studentId);
 
             int gradeBookRowsAffected = insertGradeBookStmt.executeUpdate();
@@ -111,50 +65,19 @@ public class AdminRepository {
 
     public static void updateStudent(Scanner scanner) {
         System.out.println("Enter student ID to update:");
-        int studentId = scanner.nextInt();
-        scanner.nextLine(); // Consume newline
-        
+        int studentId = getPositiveIntInput(scanner, "Enter student ID:");
+
         System.out.println("Enter new first name:");
         String firstName = scanner.nextLine();
         
         System.out.println("Enter new last name:");
         String lastName = scanner.nextLine();
 
-        int age = -1;
-        while (age < 0) {
-            System.out.println("Enter new age (must be a positive integer):");
-            if (scanner.hasNextInt()) {
-                age = scanner.nextInt();
-                if (age < 0) {
-                    System.out.println("Age must be a positive integer.");
-                }
-            } else {
-                System.out.println("Invalid input. Please enter a valid age.");
-                scanner.next(); // Consume invalid input
-            }
-        }
-        scanner.nextLine(); // Consume newline
+        int age = getPositiveIntInput(scanner, "Enter new age (must be a positive integer):");
 
-        String email;
-        while (true) {
-            System.out.println("Enter new email (must end with @harvard.com):");
-            email = scanner.nextLine();
-            if (email.endsWith("@harvard.com")) {
-                break;
-            } else {
-                System.out.println("Invalid email. Please ensure it ends with @harvard.com.");
-            }
-        }
+        String email = getEmailInput(scanner, "Enter new email (must end with @harvard.com):");
 
-        String password;
-        while (true) {
-            password = readPassword("Enter new password (minimum 8 characters, at least one special character, and one uppercase letter):");
-            if (validatePassword(password)) {
-                break;
-            } else {
-                System.out.println("Invalid password. Please ensure it meets the criteria.");
-            }
-        }
+        String password = getPasswordInput("Enter new password (minimum 8 characters, at least one special character, and one uppercase letter):");
 
         String sql = "UPDATE Student SET First_name = ?, Last_name = ?, Age = ?, Mail = ?, Password = ? WHERE ID = ?";
         try (Connection connection = Database.getConnection();
@@ -178,37 +101,10 @@ public class AdminRepository {
             e.printStackTrace();
         }
     }
- 
 
-    private static String readPassword(String prompt) {
-        Console console = System.console();
-        if (console == null) {
-            Scanner scanner = new Scanner(System.in);
-            System.out.println(prompt);
-            return scanner.nextLine();
-        }
-        char[] passwordArray = console.readPassword(prompt);
-        return new String(passwordArray);
-    }
-
-    private static boolean validatePassword(String password) {
-        if (password.length() < 8) {
-            return false;
-        }
-        Pattern specialCharPattern = Pattern.compile("[^a-z0-9 ]", Pattern.CASE_INSENSITIVE);
-        Pattern upperCasePattern = Pattern.compile("[A-Z ]");
-        Matcher hasSpecial = specialCharPattern.matcher(password);
-        Matcher hasUpperCase = upperCasePattern.matcher(password);
-        return hasSpecial.find() && hasUpperCase.find();
-    }
-
-    // Méthode pour supprimer un étudiant
     public static void deleteStudent(Scanner scanner) {
-        
-        
         System.out.println("Enter student ID to delete:");
-        int studentId = scanner.nextInt();
-        scanner.nextLine(); // Consume newline
+        int studentId = getPositiveIntInput(scanner, "Enter student ID:");
 
         String sql = "DELETE FROM Student WHERE ID = ?";
         try (Connection connection = Database.getConnection();
@@ -227,7 +123,6 @@ public class AdminRepository {
         }
     }
 
-    // Méthode pour récupérer tous les étudiants
     public static void getAllStudents(Scanner scanner) {
         String sql = "SELECT * FROM Student";
         try (Connection connection = Database.getConnection();
@@ -251,7 +146,7 @@ public class AdminRepository {
     public static void searchStudent(Scanner scanner) {
         System.out.println("Enter search criteria (id, firstname, lastname, age):");
         String searchBy = scanner.nextLine().toLowerCase();
-    
+
         String sql = "";
         switch (searchBy) {
             case "id":
@@ -270,53 +165,51 @@ public class AdminRepository {
                 System.out.println("Invalid search criteria.");
                 return;
         }
-    
+
         System.out.println("Enter search value:");
         String searchValue = scanner.nextLine();
-    
+
         try (Connection connection = Database.getConnection();
              PreparedStatement stmt = connection.prepareStatement(sql)) {
-    
-            // Bind the search value based on the search criteria
+
             if ("id".equals(searchBy) || "age".equals(searchBy)) {
                 int intValue = Integer.parseInt(searchValue);
                 stmt.setInt(1, intValue);
             } else {
                 stmt.setString(1, searchValue);
             }
-    
+
             ResultSet rs = stmt.executeQuery();
-    
-            boolean found = false; // Flag to check if any results were found
-    
+
+            boolean found = false;
+
             while (rs.next()) {
-                found = true; // Set flag to true if we find any results
+                found = true;
                 int id = rs.getInt("ID");
                 String firstName = rs.getString("First_name");
                 String lastName = rs.getString("Last_name");
                 int age = rs.getInt("Age");
                 String email = rs.getString("Mail");
                 String password = rs.getString("Password");
-                System.out.println("ID: " + id + "\nFirstame: " + firstName + "\nLastname: " + lastName + "\nAge: " + age + "\nEmail: " + email + "\nPassword: " + password);
+                System.out.println("ID: " + id + "\nFirst name: " + firstName + "\nLast name: " + lastName + "\nAge: " + age + "\nEmail: " + email + "\nPassword: " + password);
+                System.out.println("-----");
             }
-    
+
             if (!found) {
                 System.out.println("Student not found.");
             }
-    
+
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (NumberFormatException e) {
             System.out.println("Invalid input for numeric fields.");
         }
     }
-    
 
     public static void addGrade(Scanner scanner) {
         System.out.println("Enter student ID:");
-        String studentId = scanner.nextLine(); // Assume ID_student is varchar
+        String studentId = scanner.nextLine();
 
-        // Verify the student exists in the Grade_book
         if (!studentExists(studentId)) {
             System.out.println("Student ID not found in the grade book.");
             return;
@@ -327,7 +220,7 @@ public class AdminRepository {
         System.out.println("2. Physics");
         System.out.println("3. English");
         int subjectChoice = scanner.nextInt();
-        scanner.nextLine(); // Consume newline after integer input
+        scanner.nextLine();
 
         String subject = "";
         switch (subjectChoice) {
@@ -347,7 +240,7 @@ public class AdminRepository {
 
         System.out.println("Enter grade:");
         float grade = scanner.nextFloat();
-        scanner.nextLine(); // Consume newline after float input
+        scanner.nextLine();
 
         String updateSql = "UPDATE Grade_book SET " + subject + " = ? WHERE ID_student = ?";
         try (Connection connection = Database.getConnection();
@@ -359,7 +252,6 @@ public class AdminRepository {
             int rowsAffected = updateStmt.executeUpdate();
             if (rowsAffected > 0) {
                 System.out.println("Grade added successfully!");
-                // Calculate and update average grade
                 updateAverageGrade(connection, studentId);
             } else {
                 System.out.println("Failed to add grade. Student ID might be incorrect.");
@@ -432,6 +324,70 @@ public class AdminRepository {
         }
     }
 
-    
-    
+    private static int getPositiveIntInput(Scanner scanner, String prompt) {
+        int value = -1;
+        while (value < 0) {
+            System.out.println(prompt);
+            if (scanner.hasNextInt()) {
+                value = scanner.nextInt();
+                if (value < 0) {
+                    System.out.println("Value must be a positive integer.");
+                }
+            } else {
+                System.out.println("Invalid input. Please enter a valid positive integer.");
+                scanner.next();
+            }
+        }
+        scanner.nextLine();
+        return value;
+    }
+
+    private static String getEmailInput(Scanner scanner, String prompt) {
+        String email;
+        while (true) {
+            System.out.println(prompt);
+            email = scanner.nextLine();
+            if (email.endsWith("@harvard.com")) {
+                break;
+            } else {
+                System.out.println("Invalid email. Please ensure it ends with @harvard.com.");
+            }
+        }
+        return email;
+    }
+
+    private static String getPasswordInput(String prompt) {
+        String password;
+        while (true) {
+            password = readPassword(prompt);
+            if (validatePassword(password)) {
+                break;
+            } else {
+                System.out.println("Invalid password. Please ensure it meets the criteria.");
+            }
+        }
+        return password;
+    }
+
+    private static String readPassword(String prompt) {
+        Console console = System.console();
+        if (console == null) {
+            Scanner scanner = new Scanner(System.in);
+            System.out.println(prompt);
+            return scanner.nextLine();
+        }
+        char[] passwordArray = console.readPassword(prompt);
+        return new String(passwordArray);
+    }
+
+    private static boolean validatePassword(String password) {
+        if (password.length() < 8) {
+            return false;
+        }
+        Pattern specialCharPattern = Pattern.compile("[^a-z0-9 ]", Pattern.CASE_INSENSITIVE);
+        Pattern upperCasePattern = Pattern.compile("[A-Z ]");
+        Matcher hasSpecial = specialCharPattern.matcher(password);
+        Matcher hasUpperCase = upperCasePattern.matcher(password);
+        return hasSpecial.find() && hasUpperCase.find();
+    }
 }
