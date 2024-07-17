@@ -48,33 +48,27 @@ public class Connecting {
         PreparedStatement stmt = null;
 
         try {
+            System.out.println("Authenticating user: " + mail + " as " + userType);  // Debugging line
             connection = Database.getConnection();
             String sql = "SELECT * FROM " + userType + " WHERE Mail = ?";
-            if ("Student".equalsIgnoreCase(userType)) {
-                sql = "SELECT * FROM " + userType + " WHERE Mail = ? AND Password = ?";
-            }
             stmt = connection.prepareStatement(sql);
-            stmt.setString(1, mail);
-
-            if ("Student".equalsIgnoreCase(userType)) {
-                String encryptedMail = Crypto.encrypt(mail);
-                String encryptedPassword = Crypto.encrypt(password);
-                stmt.setString(1, encryptedMail);
-                stmt.setString(2, encryptedPassword);
-            }
+            String encryptedMail = Crypto.encrypt(mail);  // Encrypt the email before querying
+            stmt.setString(1, encryptedMail);
 
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
-                if ("Admin".equalsIgnoreCase(userType)) {
-                    String storedHashedPassword = rs.getString("Password");
-                    String hashedPassword = hashPassword(password);
-                    if (!hashedPassword.equals(storedHashedPassword)) {
-                        System.out.println("Invalid mail or password.");
-                        return false;
-                    }
+                String storedHashedPassword = rs.getString("Password");
+                String hashedPassword = hashPassword(password);
+                System.out.println("Stored hashed password: " + storedHashedPassword);  // Debugging line
+                System.out.println("Entered hashed password: " + hashedPassword);  // Debugging line
+
+                if (hashedPassword.equals(storedHashedPassword)) {
+                    System.out.println("Connection successful!");
+                    return true;
+                } else {
+                    System.out.println("Invalid mail or password.");
+                    return false;
                 }
-                System.out.println("Connection successful!");
-                return true;
             } else {
                 System.out.println("Invalid mail or password.");
                 return false;
@@ -122,5 +116,24 @@ public class Connecting {
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException("Error hashing password", e);
         }
+    }
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Enter your mail:");
+        String mail = scanner.nextLine();
+        System.out.println("Enter your password:");
+        String password = scanner.nextLine();
+        
+        String hashedPassword = hashPassword(password);
+        String encryptedMail = Crypto.encrypt(mail);  // Encrypt the email for the test
+        System.out.println("Testing with:");
+        System.out.println("Mail: " + mail);
+        System.out.println("Encrypted Mail: " + encryptedMail);
+        System.out.println("Password: " + password);
+        System.out.println("Hashed password: " + hashedPassword);
+
+        boolean isAuthenticated = authenticateUser(mail, password, "Student");
+        System.out.println("Authenticated: " + isAuthenticated);
     }
 }
