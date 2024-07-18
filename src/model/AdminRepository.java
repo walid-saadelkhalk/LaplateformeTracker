@@ -315,14 +315,25 @@ public class AdminRepository {
             }
         }
 
-        String sql = "UPDATE Grade_book SET " + subjectColumn + " = ? WHERE ID_student = ?";
-        try (Connection connection = Database.getConnection();
-             PreparedStatement stmt = connection.prepareStatement(sql)) {
+        try (Connection connection = Database.getConnection()) {
+            String selectSql = "SELECT " + subjectColumn + " FROM Grade_book WHERE ID_student = ?";
+            PreparedStatement selectStmt = connection.prepareStatement(selectSql);
+            selectStmt.setString(1, studentId);
+            ResultSet rs = selectStmt.executeQuery();
 
-            stmt.setInt(1, grade);
-            stmt.setString(2, studentId);
+            int currentGrade = 0;
+            if (rs.next()) {
+                currentGrade = rs.getInt(subjectColumn);
+            }
 
-            int rowsAffected = stmt.executeUpdate();
+            int newGrade = currentGrade + grade;
+
+            String updateSql = "UPDATE Grade_book SET " + subjectColumn + " = ? WHERE ID_student = ?";
+            PreparedStatement updateStmt = connection.prepareStatement(updateSql);
+            updateStmt.setInt(1, newGrade);
+            updateStmt.setString(2, studentId);
+
+            int rowsAffected = updateStmt.executeUpdate();
             if (rowsAffected > 0) {
                 System.out.println("Grade added successfully!");
             } else {
