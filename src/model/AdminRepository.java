@@ -101,17 +101,34 @@ public class AdminRepository {
         System.out.println("Enter ID to update:");
         int studentId = getPositiveIntInput(scanner, "Enter student ID:");
     
-        System.out.println("Enter new first name:");
+        System.out.println("Enter first name:");
         String firstName = scanner.nextLine();
+        while (!firstName.matches("[a-zA-Z]+")) {
+            System.out.println("Invalid input. Please enter a valid first name (letters only):");
+            firstName = scanner.nextLine();
+        }
     
-        System.out.println("Enter new last name:");
+        System.out.println("Enter last name:");
         String lastName = scanner.nextLine();
+        while (!lastName.matches("[a-zA-Z]+")) {
+            System.out.println("Invalid input. Please enter a valid last name (letters only):");
+            lastName = scanner.nextLine();
+        }
+        lastName = lastName.toUpperCase();
     
-        int age = getPositiveIntInput(scanner, "Enter new age (must be a positive integer):");
+        int age = getPositiveIntInput(scanner, "Enter age (must be a positive integer):");
     
-        String email = getEmailInput(scanner, "Enter new email (must end with @harvard.com):");
+        String email = getUniqueEmailInput(scanner, "Enter email (must end with @harvard.com and contain letters):");
     
-        String password = getPasswordInput("Enter new password (minimum 8 characters, at least one special character, and one uppercase letter):");
+        String password;
+        while (true) {
+            password = readPassword("Enter password (minimum 8 characters, at least one special character, one uppercase letter, one lowercase letter and one number):");
+            if (validatePassword(password)) {
+                break;
+            } else {
+                System.out.println("Invalid password. Please ensure it meets the criteria.");
+            }
+        }
     
         // Encrypt or hash data
         String encryptedFirstName = Crypto.encrypt(firstName);
