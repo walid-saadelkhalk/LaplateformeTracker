@@ -9,6 +9,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
@@ -39,9 +40,9 @@ public class AdminRepository {
     
         int studentId = getUniqueIntInput(scanner, "Enter student ID (must be a strictly positive integer):");
     
-        int gradebookId = getUniqueGradebookIdInput(scanner, "Enter grade book ID (must be a strictly positive integer):");
+        int gradebookId = getUniqueGradebookIdInput(scanner, "Enter gradebook ID (must be a strictly positive integer):");
     
-        String email = getEmailInput(scanner, "Enter email (must end with @harvard.com):");
+        String email = getUniqueEmailInput(scanner, "Enter email (must end with @harvard.com and contain letters):");
     
         String password;
         while (true) {
@@ -87,11 +88,14 @@ public class AdminRepository {
                 System.out.println("Failed to create student account or grade book entry.");
             }
     
+        } catch (SQLIntegrityConstraintViolationException e) {
+            System.out.println("An error occurred: The email already exists. Please try again with a different value.");
         } catch (SQLException e) {
             System.out.println("An error occurred while creating the student account or grade book entry.");
             e.printStackTrace();
         }
     }
+    
 
     public static void updateStudent(Scanner scanner) {
         System.out.println("Enter ID to update:");
@@ -693,4 +697,33 @@ public class AdminRepository {
         }
         return false;
     }
+
+    private static boolean isUniqueEmail(String email) {
+        String sql = "SELECT COUNT(*) FROM Student WHERE Mail = ?";
+        try (Connection connection = Database.getConnection();
+             PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, email);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) == 0;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }    
+    
+    private static String getUniqueEmailInput(Scanner scanner, String prompt) {
+        String email;
+        while (true) {
+            System.out.println(prompt);
+            email = scanner.nextLine().toLowerCase();
+            if (email.matches(".*[a-zA-Z].*") && email.endsWith("@harvard.com") && isUniqueEmail(email)) {
+                break;
+            } else {
+                System.out.println("Invalid email. Please ensure it contains letters, ends with @harvard.com, and is unique.");
+            }
+        }
+        return email;
+    }    
 }
