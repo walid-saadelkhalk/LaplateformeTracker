@@ -333,7 +333,7 @@ public class AdminRepository {
                 currentGrade = rs.getInt(subjectColumn);
             }
 
-            int newGrade = currentGrade + grade;
+            int newGrade = (currentGrade + grade)/2;
 
             String updateSql = "UPDATE Grade_book SET " + subjectColumn + " = ? WHERE ID_student = ?";
             PreparedStatement updateStmt = connection.prepareStatement(updateSql);
