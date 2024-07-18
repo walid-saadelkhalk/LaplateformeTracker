@@ -28,7 +28,7 @@ public class MenuAuthentication {
                             User adminUser = Connecting.AdminConnection(scanner);
                             if (adminUser != null) {
                                 MenuAdmin menuAdmin = new MenuAdmin();
-                                menuAdmin.menuAdmin(scanner, adminUser);
+                                menuAdmin.menuAdmin(scanner , adminUser);
                                 authenticatedAdmin = true;
                             } else {
                                 attemptsAdmin++;

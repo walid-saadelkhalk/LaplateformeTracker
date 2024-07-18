@@ -1,12 +1,14 @@
 package src.menu;
 
 import java.util.Scanner;
+
+import src.model.StudentRepository;
 import src.model.User;
 
 public class MenuStudent {
     public void menuStudent(Scanner scanner, User user) {
         boolean continueStudentLoop = true;
-
+        StudentRepository studentRepository = new StudentRepository();
         while (continueStudentLoop) {
             System.out.println("\nWELCOME to the STUDENT MENU " + user.getFirstName() + " " + user.getLastName() + " !");
             System.out.println("What do you want to do?");
@@ -23,16 +25,17 @@ public class MenuStudent {
 
                 switch (studentChoice) {
                     case 1:
-                        System.out.println("Maths grades");
+                        studentRepository.handleMathGrades(scanner);
                         break;
                     case 2:
-                        System.out.println("Physics grades");
+                        studentRepository.handlePhysicsGrades(scanner);
                         break;
                     case 3:
-                        System.out.println("English grades");
+                        studentRepository.handleEnglishGrades(scanner);
                         break;
                     case 4:
-                        System.out.println("Gradebook");
+                        
+                        studentRepository.handleGradebook(scanner);
                         break;
                     case 5:
                         System.out.println("Graphics");
