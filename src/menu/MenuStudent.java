@@ -37,10 +37,10 @@ public class MenuStudent {
                         
                         studentRepository.handleGradebook(scanner);
                         break;
+                    // case 5:
+                    //     System.out.println("Graphics");
+                    //     break;
                     case 5:
-                        System.out.println("Graphics");
-                        break;
-                    case 6:
                         System.out.println("wassup");
                         continueStudentLoop = false;
                         break;
