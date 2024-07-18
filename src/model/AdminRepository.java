@@ -11,6 +11,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 import java.util.regex.Matcher;
@@ -265,19 +266,19 @@ public class AdminRepository {
     public static void addGrade(Scanner scanner) {
         System.out.println("Enter student ID:");
         String studentId = scanner.nextLine();
-    
+
         if (!studentExists(studentId)) {
             System.out.println("Student not found.");
-            return;
+            scanner.nextLine(); // consume newline
         }
-    
+
         String subjectColumn = null;
         while (subjectColumn == null) {
             System.out.println("Select subject (1: Math, 2: Physics, 3: English):");
-            if (scanner.hasNextInt()) {
+            try {
                 int subject = scanner.nextInt();
                 scanner.nextLine(); // consume newline
-    
+
                 switch (subject) {
                     case 1:
                         subjectColumn = "Math_grades";
@@ -291,22 +292,26 @@ public class AdminRepository {
                     default:
                         System.out.println("Invalid choice. Please select a valid subject.");
                 }
-            } else {
+            } catch (InputMismatchException e) {
                 System.out.println("Invalid input. Please enter a number (1, 2, or 3).");
-                scanner.next(); // consume invalid input
+                scanner.nextLine(); // consume invalid input
             }
         }
 
-        int grade;
-        while (true) {
+        int grade = -1;
+        while (grade < 0) {
             System.out.println("Enter grade to add (1 to 100):");
-            grade = scanner.nextInt();
-            scanner.nextLine();
+            try {
+                grade = scanner.nextInt();
+                scanner.nextLine(); // consume newline
 
-            if (grade < 1 || grade > 100) {
-            System.out.println("Invalid grade. Please enter a grade between 1 and 100.");
-            } else {
-            break;
+                if (grade < 1 || grade > 100) {
+                    System.out.println("Invalid grade. Please enter a grade between 1 and 100.");
+                    grade = -1; // reset grade to continue the loop
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("Invalid input. Please enter a valid grade (1 to 100).");
+                scanner.nextLine(); // consume invalid input
             }
         }
 
