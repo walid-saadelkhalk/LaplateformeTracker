@@ -14,13 +14,12 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-
 public class AdminRepository {
 
     public static void createAccount(Scanner scanner) {
         System.out.println("Enter first name:");
         String firstName = scanner.nextLine();
-        
+
         System.out.println("Enter last name:");
         String lastName = scanner.nextLine();
 
@@ -28,7 +27,7 @@ public class AdminRepository {
 
         System.out.println("Enter student ID:");
         String studentId = scanner.nextLine();
-        
+
         int gradebookId = getPositiveIntInput(scanner, "Enter gradebook ID (must be a positive integer):");
 
         String email = getEmailInput(scanner, "Enter email (must end with @harvard.com):");
@@ -74,7 +73,7 @@ public class AdminRepository {
 
         System.out.println("Enter new first name:");
         String firstName = scanner.nextLine();
-        
+
         System.out.println("Enter new last name:");
         String lastName = scanner.nextLine();
 
@@ -85,8 +84,9 @@ public class AdminRepository {
         String password = getPasswordInput("Enter new password (minimum 8 characters, at least one special character, and one uppercase letter):");
 
         String sql = "UPDATE Student SET First_name = ?, Last_name = ?, Age = ?, Mail = ?, Password = ? WHERE ID = ?";
-        try (Connection connection = Database.getConnection();
-             PreparedStatement stmt = connection.prepareStatement(sql)) {
+        PreparedStatement stmt = null;
+        try (Connection connection = Database.getConnection()) {
+            stmt = connection.prepareStatement(sql);
 
             stmt.setString(1, firstName);
             stmt.setString(2, lastName);
@@ -109,16 +109,23 @@ public class AdminRepository {
 
     public static void deleteStudent(Scanner scanner) {
         System.out.println("Enter student ID to delete:");
-        int studentId = getPositiveIntInput(scanner, "Enter student ID:");
+        String studentId = scanner.nextLine();
 
-        String sql = "DELETE FROM Student WHERE ID = ?";
+        // Delete from Grade_book first
+        String deleteGradeBookSql = "DELETE FROM Grade_book WHERE ID_student = ?";
+        String deleteStudentSql = "DELETE FROM Student WHERE ID_student = ?";
         try (Connection connection = Database.getConnection();
-             PreparedStatement stmt = connection.prepareStatement(sql)) {
+             PreparedStatement stmtGradeBook = connection.prepareStatement(deleteGradeBookSql);
+             PreparedStatement stmtStudent = connection.prepareStatement(deleteStudentSql)) {
 
-            stmt.setInt(1, studentId);
-
-            int rowsAffected = stmt.executeUpdate();
-            if (rowsAffected > 0) {
+            stmtGradeBook.setString(1, studentId);
+            int rowsAffectedGradeBook = stmtGradeBook.executeUpdate();
+            System.out.println("Rows deleted from Grade_book: " + rowsAffectedGradeBook);
+            // Then delete from Student
+            stmtStudent.setString(1, studentId);
+            int rowsAffectedStudent = stmtStudent.executeUpdate();
+            System.out.println("Rows deleted from Student: " + rowsAffectedStudent);
+            if (rowsAffectedStudent > 0) {
                 System.out.println("Student deleted successfully!");
             } else {
                 System.out.println("Failed to delete student.");
@@ -218,21 +225,18 @@ public class AdminRepository {
     public static void addGrade(Scanner scanner) {
         System.out.println("Enter student ID:");
         String studentId = scanner.nextLine();
-    
+
         if (!studentExists(studentId)) {
-            System.out.println("Student ID not found in the grade book.");
+            System.out.println("Student not found.");
             return;
         }
-    
-        System.out.println("Choose subject to add grade:");
-        System.out.println("1. Math");
-        System.out.println("2. Physics");
-        System.out.println("3. English");
-        int subjectChoice = scanner.nextInt();
-        scanner.nextLine();
-    
-        String subjectColumn = "";
-        switch (subjectChoice) {
+
+        System.out.println("Select subject (1: Math, 2: Physics, 3: English):");
+        int subject = scanner.nextInt();
+        scanner.nextLine(); // consume newline
+
+        String subjectColumn;
+        switch (subject) {
             case 1:
                 subjectColumn = "Math_grades";
                 break;
@@ -243,182 +247,196 @@ public class AdminRepository {
                 subjectColumn = "English_grades";
                 break;
             default:
-                System.out.println("Invalid subject choice.");
+                System.out.println("Invalid choice.");
                 return;
         }
-    
-        System.out.println("Enter grade:");
-        float newGrade = scanner.nextFloat();
+
+        System.out.println("Enter grade to add (1 to 10):");
+        int grade = scanner.nextInt();
         scanner.nextLine();
-    
-        // Step 1: Retrieve the existing grade from the database
-        String selectSql = "SELECT " + subjectColumn + " FROM Grade_book WHERE ID_student = ?";
-        String updateSql = "UPDATE Grade_book SET " + subjectColumn + " = ? WHERE ID_student = ?";
-        
+
+        if (grade < 1 || grade > 10) {
+            System.out.println("Invalid grade. Please enter a grade between 1 and 10.");
+            return;
+        }
+
+        String sql = "UPDATE Grade_book SET " + subjectColumn + " = ? WHERE ID_student = ?";
         try (Connection connection = Database.getConnection();
-             PreparedStatement selectStmt = connection.prepareStatement(selectSql);
-             PreparedStatement updateStmt = connection.prepareStatement(updateSql)) {
-    
-            selectStmt.setString(1, studentId);
-            ResultSet rs = selectStmt.executeQuery();
-    
-            float existingGrade = 0;
-            if (rs.next()) {
-                existingGrade = rs.getFloat(subjectColumn);
-            }
-    
-            // Step 2: Calculate new average if needed (you need to implement this logic)
-            // Note: Implement logic to handle average calculation if necessary
-    
-            // Step 3: Update the existing grade with the new grade
-            float updatedGrade = existingGrade + newGrade;
-    
-            updateStmt.setFloat(1, updatedGrade);
-            updateStmt.setString(2, studentId);
-    
-            int rowsAffected = updateStmt.executeUpdate();
+             PreparedStatement stmt = connection.prepareStatement(sql)) {
+
+            stmt.setInt(1, grade);
+            stmt.setString(2, studentId);
+
+            int rowsAffected = stmt.executeUpdate();
             if (rowsAffected > 0) {
                 System.out.println("Grade added successfully!");
-                // Update average grade if necessary
-                // updateAverageGrade(connection, studentId);
             } else {
-                System.out.println("Failed to add grade. Student ID might be incorrect.");
+                System.out.println("Failed to add grade.");
             }
-    
+
+            updateAverageGrade(studentId);
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
+
+    public static void updateAverageGrade(String studentId) {
+        String sqlSelect = "SELECT Math_grades, Physics_grades, English_grades FROM Grade_book WHERE ID_student = ?";
+        String sqlUpdate = "UPDATE Grade_book SET average = ? WHERE ID_student = ?";
+        String sqlCheckAverage = "SELECT COUNT(*) FROM classroom WHERE Average_classes = ?";
+        String sqlInsertAverage = "INSERT INTO classroom (Average_classes) VALUES (?)";
     
-
-    private static void updateAverageGrade(Connection connection, String studentId) throws SQLException {
-        String selectSql = "SELECT Math_grades, Physics_grades, English_grades FROM Grade_book WHERE ID_student = ?";
-        String updateAverageSql = "UPDATE Grade_book SET average = ? WHERE ID_student = ?";
-
-        try (PreparedStatement selectStmt = connection.prepareStatement(selectSql);
-             PreparedStatement updateAverageStmt = connection.prepareStatement(updateAverageSql)) {
-
+        try (Connection connection = Database.getConnection();
+             PreparedStatement selectStmt = connection.prepareStatement(sqlSelect);
+             PreparedStatement updateStmt = connection.prepareStatement(sqlUpdate);
+             PreparedStatement checkAverageStmt = connection.prepareStatement(sqlCheckAverage);
+             PreparedStatement insertAverageStmt = connection.prepareStatement(sqlInsertAverage)) {
+    
             selectStmt.setString(1, studentId);
             ResultSet rs = selectStmt.executeQuery();
-
-            float mathGrade = 0;
-            float physicsGrade = 0;
-            float englishGrade = 0;
-            int count = 0;
-
+    
             if (rs.next()) {
-                if (rs.getFloat("Math_grades") != 0) {
-                    mathGrade = rs.getFloat("Math_grades");
+                int mathGrade = rs.getInt("Math_grades");
+                int physicsGrade = rs.getInt("Physics_grades");
+                int englishGrade = rs.getInt("English_grades");
+    
+                // Calculate the average, considering only non-zero grades
+                int total = 0;
+                int count = 0;
+    
+                if (mathGrade > 0) {
+                    total += mathGrade;
                     count++;
                 }
-                if (rs.getFloat("Physics_grades") != 0) {
-                    physicsGrade = rs.getFloat("Physics_grades");
+                if (physicsGrade > 0) {
+                    total += physicsGrade;
                     count++;
                 }
-                if (rs.getFloat("English_grades") != 0) {
-                    englishGrade = rs.getFloat("English_grades");
+                if (englishGrade > 0) {
+                    total += englishGrade;
                     count++;
                 }
+    
+                if (count > 0) {
+                    double average = (double) total / count;
+    
+                    // Check if the average exists in the classroom table
+                    checkAverageStmt.setDouble(1, average);
+                    ResultSet rsCheck = checkAverageStmt.executeQuery();
+                    if (rsCheck.next() && rsCheck.getInt(1) == 0) {
+                        // Average does not exist, insert it
+                        insertAverageStmt.setDouble(1, average);
+                        insertAverageStmt.executeUpdate();
+                    }
+    
+                    // Update the average in the Grade_book table
+                    updateStmt.setDouble(1, average);
+                    updateStmt.setString(2, studentId);
+    
+                    updateStmt.executeUpdate();
+                }
             }
-
-            if (count == 0) {
-                System.out.println("No grades found for this student.");
-                return;
-            }
-
-            float average = (mathGrade + physicsGrade + englishGrade) / count;
-            updateAverageStmt.setFloat(1, average);
-            updateAverageStmt.setString(2, studentId);
-
-            int rowsAffected = updateAverageStmt.executeUpdate();
-            if (rowsAffected > 0) {
-                System.out.println("Average grade updated successfully!");
-            } else {
-                System.out.println("Failed to update average grade.");
-            }
-
-        }
-    }
-
-    private static boolean studentExists(String studentId) {
-        String query = "SELECT 1 FROM Grade_book WHERE ID_student = ?";
-        try (Connection connection = Database.getConnection();
-             PreparedStatement stmt = connection.prepareStatement(query)) {
-            stmt.setString(1, studentId);
-            ResultSet rs = stmt.executeQuery();
-            return rs.next();
+    
         } catch (SQLException e) {
             e.printStackTrace();
-            return false;
         }
+    }
+    
+
+
+    public static boolean studentExists(String studentId) {
+        String sql = "SELECT COUNT(*) FROM Grade_book WHERE ID_student = ?";
+        try (Connection connection = Database.getConnection();
+             PreparedStatement stmt = connection.prepareStatement(sql)) {
+
+            stmt.setString(1, studentId);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
     private static int getPositiveIntInput(Scanner scanner, String prompt) {
-        int value = -1;
-        while (value < 0) {
+        int input;
+        while (true) {
             System.out.println(prompt);
             if (scanner.hasNextInt()) {
-                value = scanner.nextInt();
-                if (value < 0) {
-                    System.out.println("Value must be a positive integer.");
+                input = scanner.nextInt();
+                scanner.nextLine();
+                if (input > 0) {
+                    break;
+                } else {
+                    System.out.println("Please enter a positive integer.");
                 }
             } else {
-                System.out.println("Invalid input. Please enter a valid positive integer.");
-                scanner.next();
+                scanner.nextLine();
+                System.out.println("Invalid input. Please enter a positive integer.");
             }
         }
-        scanner.nextLine();
-        return value;
+        return input;
     }
 
     private static String getEmailInput(Scanner scanner, String prompt) {
-        String email;
+        String input;
         while (true) {
             System.out.println(prompt);
-            email = scanner.nextLine();
-            if (email.endsWith("@harvard.com")) {
+            input = scanner.nextLine();
+            if (input.endsWith("@harvard.com")) {
                 break;
             } else {
-                System.out.println("Invalid email. Please ensure it ends with @harvard.com.");
+                System.out.println("Invalid email. Please enter an email ending with @harvard.com.");
             }
         }
-        return email;
+        return input;
     }
 
     private static String getPasswordInput(String prompt) {
-        String password;
-        while (true) {
-            password = readPassword(prompt);
-            if (validatePassword(password)) {
-                break;
-            } else {
-                System.out.println("Invalid password. Please ensure it meets the criteria.");
-            }
-        }
-        return password;
-    }
-
-    private static String readPassword(String prompt) {
         Console console = System.console();
         if (console == null) {
+            System.out.println("Console not available. Using Scanner for password input.");
             Scanner scanner = new Scanner(System.in);
-            System.out.println(prompt);
-            return scanner.nextLine();
+            return getPasswordFromScanner(scanner, prompt);
         }
-        char[] passwordArray = console.readPassword(prompt);
-        return new String(passwordArray);
+
+        String input;
+        while (true) {
+            char[] passwordArray = console.readPassword(prompt);
+            input = new String(passwordArray);
+            if (validatePassword(input)) {
+                break;
+            } else {
+                System.out.println("Invalid password. Please enter a password with a minimum of 8 characters, at least one special character, and one uppercase letter.");
+            }
+        }
+        return input;
+    }
+
+    private static String getPasswordFromScanner(Scanner scanner, String prompt) {
+        String input;
+        while (true) {
+            System.out.println(prompt);
+            input = scanner.nextLine();
+            if (validatePassword(input)) {
+                break;
+            } else {
+                System.out.println("Invalid password. Please enter a password with a minimum of 8 characters, at least one special character, and one uppercase letter.");
+            }
+        }
+        return input;
     }
 
     private static boolean validatePassword(String password) {
-        if (password.length() < 8) {
-            return false;
-        }
-        Pattern specialCharPattern = Pattern.compile("[^a-z0-9 ]", Pattern.CASE_INSENSITIVE);
-        Pattern upperCasePattern = Pattern.compile("[A-Z ]");
-        Matcher hasSpecial = specialCharPattern.matcher(password);
-        Matcher hasUpperCase = upperCasePattern.matcher(password);
-        return hasSpecial.find() && hasUpperCase.find();
+        return password.length() >= 8 &&
+                password.matches(".*[!@#$%^&*()].*") &&
+                password.matches(".*[A-Z].*");
     }
+
+
 
 
     public static void exportStudentsToHTML() {
