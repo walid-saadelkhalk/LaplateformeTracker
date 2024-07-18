@@ -16,8 +16,8 @@ public class MenuStudent {
             System.out.println("2. Physics grades");
             System.out.println("3. English grades");
             System.out.println("4. Gradebook");
-            System.out.println("5. Graphics");
-            System.out.println("6. Quit");
+            // System.out.println("5. Graphics");
+            System.out.println("5. Quit");
 
             if (scanner.hasNextInt()) {
                 int studentChoice = scanner.nextInt();

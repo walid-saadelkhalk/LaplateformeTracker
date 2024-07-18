@@ -291,13 +291,17 @@ public class AdminRepository {
                 return;
         }
 
-        System.out.println("Enter grade to add (1 to 10):");
-        int grade = scanner.nextInt();
-        scanner.nextLine();
+        int grade;
+        while (true) {
+            System.out.println("Enter grade to add (1 to 100):");
+            grade = scanner.nextInt();
+            scanner.nextLine();
 
-        if (grade < 1 || grade > 10) {
-            System.out.println("Invalid grade. Please enter a grade between 1 and 10.");
-            return;
+            if (grade < 1 || grade > 100) {
+            System.out.println("Invalid grade. Please enter a grade between 1 and 100.");
+            } else {
+            break;
+            }
         }
 
         String sql = "UPDATE Grade_book SET " + subjectColumn + " = ? WHERE ID_student = ?";
