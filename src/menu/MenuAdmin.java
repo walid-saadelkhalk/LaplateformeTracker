@@ -10,6 +10,7 @@ public class MenuAdmin {
         boolean continueAdminLoop = true;
 
         while (continueAdminLoop) {
+            // printed menu for admin
             System.out.println("\nWELCOME to the ADMIN MENU " + user.getFirstName() + " " + user.getLastName() + " !");
             System.out.println("What do you want to do?");
             System.out.println("1. Search a student");
@@ -17,7 +18,7 @@ public class MenuAdmin {
             System.out.println("3. Update a student");
             System.out.println("4. Delete a student");
             System.out.println("5. Enter a grade");
-            System.out.println("6. Export results (CSV, PDF, HTML)"); // New option for exporting results
+            System.out.println("6. Export results (CSV, PDF, HTML)"); 
             System.out.println("7. All students");
             System.out.println("8. Quit");
             System.out.println("Enter your choice:");
@@ -28,25 +29,25 @@ public class MenuAdmin {
             
                 switch (adminChoice) {
                     case 1:
-                        AdminRepository.searchStudent(scanner);
+                        AdminRepository.searchStudent(scanner); // Example method in AdminRepository for searching a student
                         break;
                     case 2:
-                        AdminRepository.createAccount(scanner);
+                        AdminRepository.createAccount(scanner); // Example method in AdminRepository for creating a student
                         break;
                     case 3:
-                        AdminRepository.updateStudent(scanner);
+                        AdminRepository.updateStudent(scanner); // Example method in AdminRepository for updating a student
                         break;
                     case 4:
-                        AdminRepository.deleteStudent(scanner);
+                        AdminRepository.deleteStudent(scanner); // Example method in AdminRepository for deleting a student
                         break;
                     case 5:
-                        AdminRepository.addGrade(scanner);
+                        AdminRepository.addGrade(scanner); // Example method in AdminRepository for adding a grade
                         break;
                     case 6:
-                        exportMenu(scanner);
+                        exportMenu(scanner); // Call export menu
                         break;
                     case 7:
-                        AdminRepository.getAllStudents(scanner);
+                        AdminRepository.getAllStudents(scanner); // Example method in AdminRepository for getting all students
                         break;
                     case 8:
                         continueAdminLoop = false;
@@ -71,7 +72,6 @@ public class MenuAdmin {
             System.out.println("\nEXPORT MENU");
             System.out.println("Choose format to export:");
             System.out.println("1. Export to CSV");
-            // System.out.println("2. Export to PDF");
             System.out.println("2. Export to HTML");
             System.out.println("3. Back to main menu");
             System.out.println("Enter your choice:");

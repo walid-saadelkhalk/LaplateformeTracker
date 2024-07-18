@@ -10,6 +10,8 @@ import java.util.Scanner;
 
 public class StudentRepository {
 
+
+    // geter to get the grade of the student
     public float getMathGrade(String studentId) {
         return getGrade(studentId, "Math_grades");
     }
@@ -22,6 +24,7 @@ public class StudentRepository {
         return getGrade(studentId, "English_grades");
     }
 
+    // geter to get the gradebook of the student
     public void getGradebook(String studentId) {
         String sql = "SELECT Math_grades, Physics_grades, English_grades, average FROM Grade_book WHERE ID_student = ?";
 
@@ -50,6 +53,7 @@ public class StudentRepository {
         }
     }
 
+    // handle the grades of the student
     public void handleMathGrades(Scanner scanner) {
         System.out.println("Enter student ID:");
         String studentId = scanner.nextLine();
@@ -57,6 +61,7 @@ public class StudentRepository {
         System.out.println("Maths grades: " + (mathGrade == -1 ? "No grade found." : mathGrade));
     }
 
+    // handle the grades of the student
     public void handlePhysicsGrades(Scanner scanner) {
         System.out.println("Enter student ID:");
         String studentId = scanner.nextLine();
@@ -64,6 +69,7 @@ public class StudentRepository {
         System.out.println("Physics grades: " + (physicsGrade == -1 ? "No grade found." : physicsGrade));
     }
 
+    // handle the grades of the student
     public void handleEnglishGrades(Scanner scanner) {
         System.out.println("Enter student ID:");
         String studentId = scanner.nextLine();
@@ -71,41 +77,15 @@ public class StudentRepository {
         System.out.println("English grades: " + (englishGrade == -1 ? "No grade found." : englishGrade));
     }
 
+    // handle the gradebook of the student
     public void handleGradebook(Scanner scanner) {
         System.out.println("Enter student ID:");
         String studentId = scanner.nextLine();
         getGradebook(studentId);
     }
 
-    public List<String> getAllGradebooks() {
-        List<String> gradebooks = new ArrayList<>();
-        String sql = "SELECT * FROM Grade_book";
 
-        try (Connection connection = Database.getConnection();
-             PreparedStatement stmt = connection.prepareStatement(sql);
-             ResultSet rs = stmt.executeQuery()) {
-
-            while (rs.next()) {
-                String studentId = rs.getString("ID_student");
-                String mathGrade = rs.getString("Math_grades");
-                String physicsGrade = rs.getString("Physics_grades");
-                String englishGrade = rs.getString("English_grades");
-                String average = rs.getString("average");
-
-                String gradebook = String.format(
-                        "ID_student: %s\nMath grade: %s\nPhysics grade: %s\nEnglish grade: %s\nAverage grade: %s",
-                        studentId, mathGrade, physicsGrade, englishGrade, average);
-                gradebooks.add(gradebook);
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return gradebooks;
-    }
-
-
+    // get the grade of the student
     private static float getGrade(String studentId, String subject) {
         String sql = "SELECT " + subject + " FROM Grade_book WHERE ID_student = ?";
 

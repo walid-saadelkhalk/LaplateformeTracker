@@ -11,6 +11,7 @@ import java.security.NoSuchAlgorithmException;
 
 public class Connecting {
 
+    // Function to connect as a student
     public static User StudentConnection(Scanner scanner) {
         Console console = System.console();
         if (console == null) {
@@ -26,7 +27,8 @@ public class Connecting {
 
         return authenticateUser(mail, password, "Student");
     }
-
+ 
+    // Function to connect as an admin
     public static User AdminConnection(Scanner scanner) {
         Console console = System.console();
         if (console == null) {
@@ -43,6 +45,7 @@ public class Connecting {
         return authenticateUser(mail, password, "Admin");
     }
 
+    // Function to authenticate a user
     private static User authenticateUser(String mail, String password, String userType) {
         Connection connection = null;
         PreparedStatement stmt = null;
@@ -79,6 +82,7 @@ public class Connecting {
             e.printStackTrace();
             return null;
         } finally {
+            // Close the connection and statement
             try {
                 if (stmt != null) {
                     stmt.close();
@@ -92,6 +96,7 @@ public class Connecting {
         }
     }
 
+    // Function to read a password with asterisks
     private static String readPasswordWithAsterisks(Console console) {
         char[] passwordArray = console.readPassword();
         StringBuilder password = new StringBuilder();
@@ -103,7 +108,7 @@ public class Connecting {
         return password.toString();
     }
 
-    // Méthode pour hacher un mot de passe en utilisant SHA-256
+    // Function to hash a password
     private static String hashPassword(String password) {
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-256");

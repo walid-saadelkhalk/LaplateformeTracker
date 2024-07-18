@@ -3,8 +3,10 @@ package src.model;
 public class Crypto {
 
 
+    // Shift value for the Caesar cipher
     private static final int SHIFT = 3; 
 
+    // Encrypts the text using the Caesar cipher
     public static String encrypt(String text) {
         StringBuilder result = new StringBuilder();
         for (char character : text.toCharArray()) {
@@ -18,6 +20,7 @@ public class Crypto {
         return result.toString();
     }
 
+    // Decrypts the text using the Caesar cipher
     public static String decrypt(String text) {
         StringBuilder result = new StringBuilder();
         for (char character : text.toCharArray()) {

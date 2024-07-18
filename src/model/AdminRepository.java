@@ -20,6 +20,7 @@ import java.util.regex.Pattern;
 
 public class AdminRepository {
 
+    // Function to create a new student in TABLES Student and Grade_book
     public static void createAccount(Scanner scanner) {
         System.out.println("Enter first name:");
         String firstName = scanner.nextLine();
@@ -54,7 +55,7 @@ public class AdminRepository {
             }
         }
     
-        // Chiffrement ou hachage des données
+        // Encrypt or hash data and password
         String encryptedFirstName = Crypto.encrypt(firstName);
         String encryptedLastName = Crypto.encrypt(lastName);
         String encryptedEmail = Crypto.encrypt(email);
@@ -87,7 +88,7 @@ public class AdminRepository {
             } else {
                 System.out.println("Failed to create student account or grade book entry.");
             }
-    
+        
         } catch (SQLIntegrityConstraintViolationException e) {
             System.out.println("An error occurred: The email already exists. Please try again with a different value.");
         } catch (SQLException e) {
@@ -96,7 +97,7 @@ public class AdminRepository {
         }
     }
     
-
+    // Function to Update a student in TABLES Student and Grade_book
     public static void updateStudent(Scanner scanner) {
         System.out.println("Enter ID to update:");
         int studentId = getPositiveIntInput(scanner, "Enter student ID:");
@@ -135,9 +136,11 @@ public class AdminRepository {
         String encryptedLastName = Crypto.encrypt(lastName);
         String encryptedEmail = Crypto.encrypt(email);
         String hashedPassword = hashPassword(password);
-    
+        
+        // Update Student table
         String sql = "UPDATE Student SET First_name = ?, Last_name = ?, Age = ?, Mail = ?, Password = ? WHERE ID = ?";
-    
+        
+        
         try (Connection connection = Database.getConnection();
              PreparedStatement stmt = connection.prepareStatement(sql)) {
     
@@ -160,7 +163,7 @@ public class AdminRepository {
         }
     }
 
-    // Méthode pour supprimer un étudiant
+    // Function to delete a student in TABLES Student and Grade_book
     public static void deleteStudent(Scanner scanner) {
         System.out.println("Enter student ID to delete:");
         String studentId = scanner.nextLine();
@@ -189,6 +192,7 @@ public class AdminRepository {
         }
     }
 
+    // Function to get all students from TABLES Student and Grade_book
     public static void getAllStudents(Scanner scanner) {
         String sql = "SELECT * FROM Student";
         try (Connection connection = Database.getConnection();
@@ -203,7 +207,7 @@ public class AdminRepository {
                 String encryptedEmail = rs.getString("Mail");
                 String encryptedPassword = rs.getString("Password");
 
-                // Déchiffrer les champs nécessaires
+                // Dcrypt the necessary fields
                 String firstName = Crypto.decrypt(encryptedFirstName);
                 String lastName = Crypto.decrypt(encryptedLastName);
                 String email = Crypto.decrypt(encryptedEmail);
@@ -216,10 +220,12 @@ public class AdminRepository {
         }
     }
 
+    // Function to search a student in TABLES Student and Grade_book
     public static void searchStudent(Scanner scanner) {
         System.out.println("Enter search criteria (id, firstname, lastname, age):");
         String searchBy = scanner.nextLine().toLowerCase();
 
+        // Validate search criteria
         String sql = "";
         switch (searchBy) {
             case "id":
@@ -270,7 +276,7 @@ public class AdminRepository {
                 String encryptedEmail = rs.getString("Mail");
                 String encryptedPassword = rs.getString("Password");
 
-                // Déchiffrer les champs nécessaires
+                // Decrypt the necessary fields
                 String firstName = Crypto.decrypt(encryptedFirstName);
                 String lastName = Crypto.decrypt(encryptedLastName);
                 String email = Crypto.decrypt(encryptedEmail);
@@ -279,6 +285,7 @@ public class AdminRepository {
                 System.out.println("ID: " + id + "\nFirstname: " + firstName + "\nLastname: " + lastName + "\nAge: " + age + "\nEmail: " + email + "\nPassword: " + password);
             }
 
+            // If no results were found
             if (!found) {
                 System.out.println("Student not found.");
             }
@@ -290,6 +297,7 @@ public class AdminRepository {
         }
     }
 
+    // Function to add a grade to a student in TABLES Grade_book
     public static void addGrade(Scanner scanner) {
         System.out.println("Enter student ID:");
         String studentId = scanner.nextLine();
@@ -305,7 +313,7 @@ public class AdminRepository {
             try {
                 int subject = scanner.nextInt();
                 scanner.nextLine(); // consume newline
-
+                // Set the subject column based on the user's choice
                 switch (subject) {
                     case 1:
                         subjectColumn = "Math_grades";
@@ -325,6 +333,7 @@ public class AdminRepository {
             }
         }
 
+        // Get the grade to add
         int grade = -1;
         while (grade < 0) {
             System.out.println("Enter grade to add (1 to 100):");
@@ -332,6 +341,7 @@ public class AdminRepository {
                 grade = scanner.nextInt();
                 scanner.nextLine(); // consume newline
 
+                // Validate the grade
                 if (grade < 1 || grade > 100) {
                     System.out.println("Invalid grade. Please enter a grade between 1 and 100.");
                     grade = -1; // reset grade to continue the loop
@@ -342,6 +352,7 @@ public class AdminRepository {
             }
         }
 
+        // Add the grade to the student's grade book
         try (Connection connection = Database.getConnection()) {
             String selectSql = "SELECT " + subjectColumn + " FROM Grade_book WHERE ID_student = ?";
             PreparedStatement selectStmt = connection.prepareStatement(selectSql);
@@ -355,6 +366,7 @@ public class AdminRepository {
 
             int newGrade = (currentGrade + grade)/2;
 
+            // Update the grade in the Grade_book table
             String updateSql = "UPDATE Grade_book SET " + subjectColumn + " = ? WHERE ID_student = ?";
             PreparedStatement updateStmt = connection.prepareStatement(updateSql);
             updateStmt.setInt(1, newGrade);
@@ -374,6 +386,7 @@ public class AdminRepository {
         }
     }
 
+    // Function to update the average grade in TABLES Grade_book and classroom
     public static void updateAverageGrade(String studentId) {
         String sqlSelect = "SELECT Math_grades, Physics_grades, English_grades FROM Grade_book WHERE ID_student = ?";
         String sqlUpdate = "UPDATE Grade_book SET average = ? WHERE ID_student = ?";
@@ -437,7 +450,7 @@ public class AdminRepository {
     }
     
 
-
+    // Function to check if a student exists in TABLES Grade_book
     public static boolean studentExists(String studentId) {
         String sql = "SELECT COUNT(*) FROM Grade_book WHERE ID_student = ?";
         try (Connection connection = Database.getConnection();
@@ -454,6 +467,7 @@ public class AdminRepository {
         return false;
     }
 
+    // Function to get a positive integer input
     private static int getPositiveIntInput(Scanner scanner, String prompt) {
         int input;
         while (true) {
@@ -509,6 +523,7 @@ public class AdminRepository {
         return input;
     }
 
+    // Function to get a password from a scanner
     private static String getPasswordFromScanner(Scanner scanner, String prompt) {
         String input;
         while (true) {
@@ -523,6 +538,7 @@ public class AdminRepository {
         return input;
     }
 
+    // Function to export students to CSV
     public static void exportStudentsToCSV() {
         String csvFilePath = "export/students.csv";
     
@@ -563,6 +579,7 @@ public class AdminRepository {
         }
     }       
 
+    // Function to export students to HTML
     public static void exportStudentsToHTML() {
         String htmlFilePath = "export/students.html";
     
@@ -585,7 +602,7 @@ public class AdminRepository {
                 String encryptedEmail = rs.getString("Mail");
                 String encryptedPassword = rs.getString("Password");
     
-                // Déchiffrer les champs nécessaires
+                
                 String firstName = Crypto.decrypt(encryptedFirstName);
                 String lastName = Crypto.decrypt(encryptedLastName);
                 String email = Crypto.decrypt(encryptedEmail);
@@ -603,6 +620,7 @@ public class AdminRepository {
         }
     }
     
+    // Function to get a password from the console or scanner
     private static String readPassword(String prompt) {
         Console console = System.console();
         if (console == null) {
@@ -630,7 +648,7 @@ public class AdminRepository {
         return hasLowerCase.find() && hasUpperCase.find() && hasDigit.find() && hasSpecialChar.find();
     }
 
-    // Méthode pour hacher un mot de passe en utilisant SHA-256
+    // Function to hash a password using SHA-256
     private static String hashPassword(String password) {
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-256");
@@ -647,6 +665,7 @@ public class AdminRepository {
         }
     }
 
+    // Function to get a unique integer input
     private static int getUniqueIntInput(Scanner scanner, String prompt) {
         int value;
         while (true) {
@@ -666,6 +685,7 @@ public class AdminRepository {
         }
     }
     
+    // Function to get a unique student ID input
     private static boolean isUniqueStudentId(int studentId) {
         String sql = "SELECT COUNT(*) FROM Student WHERE ID_student = ?";
         try (Connection connection = Database.getConnection();
@@ -681,6 +701,7 @@ public class AdminRepository {
         return false;
     }
 
+    // Function to get a unique gradebook ID input
     private static int getUniqueGradebookIdInput(Scanner scanner, String prompt) {
         int value;
         while (true) {
@@ -700,6 +721,7 @@ public class AdminRepository {
         }
     }
 
+    // Function to check if a gradebook ID is unique
     private static boolean isUniqueGradebookId(int gradebookId) {
         String sql = "SELECT COUNT(*) FROM Student WHERE ID_gradebook = ?";
         try (Connection connection = Database.getConnection();
@@ -715,6 +737,8 @@ public class AdminRepository {
         return false;
     }
 
+
+    // Function to get a unique email input
     private static boolean isUniqueEmail(String email) {
         String sql = "SELECT COUNT(*) FROM Student WHERE Mail = ?";
         try (Connection connection = Database.getConnection();
@@ -730,6 +754,8 @@ public class AdminRepository {
         return false;
     }    
     
+
+    // Function to get a unique email input
     private static String getUniqueEmailInput(Scanner scanner, String prompt) {
         String email;
         while (true) {

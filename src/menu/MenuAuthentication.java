@@ -9,6 +9,7 @@ public class MenuAuthentication {
         boolean continueAuthenticationLoop = true;
 
         while (continueAuthenticationLoop) {
+            // printed menu for authentication
             System.out.println("\nCONNECTION!");
             System.out.println("1. Admin");
             System.out.println("2. Student");
@@ -20,6 +21,7 @@ public class MenuAuthentication {
                 scanner.nextLine();
 
                 switch (authentication) {
+                    // case 1 for admin menu 
                     case 1:
                         boolean authenticatedAdmin = false;
                         int attemptsAdmin = 0;
@@ -39,6 +41,7 @@ public class MenuAuthentication {
                             System.out.println("Too many failed attempts. Returning to authentication menu.");
                         }
                         break;
+                    // case 2 for student menu
                     case 2:
                         boolean authenticatedStudent = false;
                         int attemptsStudent = 0;
@@ -58,6 +61,7 @@ public class MenuAuthentication {
                             System.out.println("Too many failed attempts. Returning to authentication menu.");
                         }
                         break;
+                    // case 3 for quit the program
                     case 3:
                         System.out.println("Goodbyeeeeee!");
                         continueAuthenticationLoop = false;

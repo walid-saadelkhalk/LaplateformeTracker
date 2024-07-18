@@ -6,6 +6,7 @@ import java.util.Scanner;
 
 public class PasswordHasher {
 
+    // Function to test the hashing of a password
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
@@ -18,7 +19,7 @@ public class PasswordHasher {
         System.out.println("Hashed password: " + hashedPassword);
     }
 
-    // Méthode pour hacher un mot de passe en utilisant SHA-256
+    // Function to hash a password
     private static String hashPassword(String password) {
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-256");
