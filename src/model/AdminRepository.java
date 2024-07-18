@@ -22,17 +22,25 @@ public class AdminRepository {
     public static void createAccount(Scanner scanner) {
         System.out.println("Enter first name:");
         String firstName = scanner.nextLine();
-
+        while (!firstName.matches("[a-zA-Z]+")) {
+            System.out.println("Invalid input. Please enter a valid first name (letters only):");
+            firstName = scanner.nextLine();
+        }
+    
         System.out.println("Enter last name:");
         String lastName = scanner.nextLine();
-
+        while (!lastName.matches("[a-zA-Z]+")) {
+            System.out.println("Invalid input. Please enter a valid last name (letters only):");
+            lastName = scanner.nextLine();
+        }
+        lastName = lastName.toUpperCase();
+    
         int age = getPositiveIntInput(scanner, "Enter age (must be a positive integer):");
-
+    
         System.out.println("Enter student ID:");
         String studentId = scanner.nextLine();
-
+    
         int gradebookId = getPositiveIntInput(scanner, "Enter gradebook ID (must be a positive integer):");
-        
         
         String email = getEmailInput(scanner, "Enter email (must end with @harvard.com):");
         
@@ -45,21 +53,20 @@ public class AdminRepository {
                 System.out.println("Invalid password. Please ensure it meets the criteria.");
             }
         }
-
-        
+    
         // Chiffrement ou hachage des données
         String encryptedFirstName = Crypto.encrypt(firstName);
         String encryptedLastName = Crypto.encrypt(lastName);
         String encryptedEmail = Crypto.encrypt(email);
         String hashedPassword = hashPassword(password);
-
+    
         String insertStudentSql = "INSERT INTO Student (First_name, Last_name, Age, ID_student, ID_gradebook, Mail, Password) VALUES (?, ?, ?, ?, ?, ?, ?)";
         String insertGradeBookSql = "INSERT INTO Grade_book (ID_student) VALUES (?)";
-
+    
         try (Connection connection = Database.getConnection();
              PreparedStatement insertStudentStmt = connection.prepareStatement(insertStudentSql);
              PreparedStatement insertGradeBookStmt = connection.prepareStatement(insertGradeBookSql)) {
-
+    
             // Insert into Student table
             insertStudentStmt.setString(1, encryptedFirstName);
             insertStudentStmt.setString(2, encryptedLastName);
@@ -68,19 +75,19 @@ public class AdminRepository {
             insertStudentStmt.setInt(5, gradebookId);
             insertStudentStmt.setString(6, encryptedEmail);
             insertStudentStmt.setString(7, hashedPassword);
-
+    
             int studentRowsAffected = insertStudentStmt.executeUpdate();
-
+    
             insertGradeBookStmt.setString(1, studentId);
-
+    
             int gradeBookRowsAffected = insertGradeBookStmt.executeUpdate();
-
+    
             if (studentRowsAffected > 0 && gradeBookRowsAffected > 0) {
                 System.out.println("Student account and grade book entry created successfully!");
             } else {
                 System.out.println("Failed to create student account or grade book entry.");
             }
-
+    
         } catch (SQLException e) {
             System.out.println("An error occurred while creating the student account or grade book entry.");
             e.printStackTrace();
@@ -565,7 +572,6 @@ public class AdminRepository {
         }
     }
     
-
     private static String readPassword(String prompt) {
         Console console = System.console();
         if (console == null) {
