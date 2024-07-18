@@ -247,7 +247,7 @@ public class AdminRepository {
     public static void searchStudent(Scanner scanner) {
         System.out.println("Enter search criteria (id, firstname, lastname, age):");
         String searchBy = scanner.nextLine().toLowerCase();
-    
+
         String sql = "";
         switch (searchBy) {
             case "id":
@@ -266,25 +266,29 @@ public class AdminRepository {
                 System.out.println("Invalid search criteria.");
                 return;
         }
-    
+
         System.out.println("Enter search value:");
         String searchValue = scanner.nextLine();
-    
+
         try (Connection connection = Database.getConnection();
              PreparedStatement stmt = connection.prepareStatement(sql)) {
-    
+
             // Bind the search value based on the search criteria
             if ("id".equals(searchBy) || "age".equals(searchBy)) {
                 int intValue = Integer.parseInt(searchValue);
                 stmt.setInt(1, intValue);
             } else {
+                // Encrypt the search value if it is firstname or lastname
+                if ("firstname".equals(searchBy) || "lastname".equals(searchBy)) {
+                    searchValue = Crypto.encrypt(searchValue);
+                }
                 stmt.setString(1, searchValue);
             }
-    
+
             ResultSet rs = stmt.executeQuery();
-    
+
             boolean found = false; // Flag to check if any results were found
-    
+
             while (rs.next()) {
                 found = true; // Set flag to true if we find any results
                 int id = rs.getInt("ID");
@@ -293,7 +297,7 @@ public class AdminRepository {
                 int age = rs.getInt("Age");
                 String encryptedEmail = rs.getString("Mail");
                 String encryptedPassword = rs.getString("Password");
-    
+
                 // Déchiffrer les champs nécessaires
                 String firstName = Crypto.decrypt(encryptedFirstName);
                 String lastName = Crypto.decrypt(encryptedLastName);
@@ -302,11 +306,11 @@ public class AdminRepository {
 
                 System.out.println("ID: " + id + "\nFirstname: " + firstName + "\nLastname: " + lastName + "\nAge: " + age + "\nEmail: " + email + "\nPassword: " + password);
             }
-    
+
             if (!found) {
                 System.out.println("Student not found.");
             }
-    
+
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (NumberFormatException e) {
