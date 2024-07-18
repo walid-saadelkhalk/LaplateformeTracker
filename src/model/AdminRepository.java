@@ -485,48 +485,86 @@ public class AdminRepository {
         return input;
     }
 
-    // private static boolean validatePassword(String password) {
-    //     return password.length() >= 8 &&
-    //             password.matches(".*[!@#$%^&*()].*") &&
-    //             password.matches(".*[A-Z].*");
-    // }
-
-
-
+    public static void exportStudentsToCSV() {
+        String csvFilePath = "export/students.csv";
+    
+        String sql = "SELECT * FROM Student";
+    
+        try (Connection connection = Database.getConnection();
+             Statement stmt = connection.createStatement();
+             ResultSet rs = stmt.executeQuery(sql);
+             FileWriter csvWriter = new FileWriter(csvFilePath)) {
+    
+            // Write CSV header
+            csvWriter.append("ID,First_name,Last_name,Age,Email,Password\n");
+    
+            // Write CSV rows
+            while (rs.next()) {
+                int id = rs.getInt("ID");
+                String encryptedFirstName = rs.getString("First_name");
+                String encryptedLastName = rs.getString("Last_name");
+                int age = rs.getInt("Age");
+                String encryptedEmail = rs.getString("Mail");
+                String encryptedPassword = rs.getString("Password");
+    
+                // Déchiffrer les champs nécessaires
+                String firstName = Crypto.decrypt(encryptedFirstName);
+                String lastName = Crypto.decrypt(encryptedLastName);
+                String email = Crypto.decrypt(encryptedEmail);
+                String password = Crypto.decrypt(encryptedPassword);
+    
+                csvWriter.append(String.join(",", String.valueOf(id), firstName, lastName,
+                        String.valueOf(age), email, password));
+                csvWriter.append("\n");
+            }
+    
+            System.out.println("CSV file exported successfully to: " + csvFilePath);
+    
+        } catch (SQLException | IOException e) {
+            e.printStackTrace();
+        }
+    }       
 
     public static void exportStudentsToHTML() {
         String htmlFilePath = "export/students.html";
-
+    
         String sql = "SELECT * FROM Student";
-
+    
         try (Connection connection = Database.getConnection();
              Statement stmt = connection.createStatement();
              ResultSet rs = stmt.executeQuery(sql);
              FileWriter htmlWriter = new FileWriter(htmlFilePath)) {
-
+    
             htmlWriter.write("<html>\n<head>\n<title>Students List</title>\n</head>\n<body>\n");
             htmlWriter.write("<h1>Students List</h1>\n<table border=\"1\">\n");
             htmlWriter.write("<tr><th>ID</th><th>First Name</th><th>Last Name</th><th>Age</th><th>Email</th><th>Password</th></tr>\n");
-
+    
             while (rs.next()) {
                 int id = rs.getInt("ID");
-                String firstName = rs.getString("First_name");
-                String lastName = rs.getString("Last_name");
+                String encryptedFirstName = rs.getString("First_name");
+                String encryptedLastName = rs.getString("Last_name");
                 int age = rs.getInt("Age");
-                String email = rs.getString("Mail");
-                String password = rs.getString("Password");
-
+                String encryptedEmail = rs.getString("Mail");
+                String encryptedPassword = rs.getString("Password");
+    
+                // Déchiffrer les champs nécessaires
+                String firstName = Crypto.decrypt(encryptedFirstName);
+                String lastName = Crypto.decrypt(encryptedLastName);
+                String email = Crypto.decrypt(encryptedEmail);
+                String password = Crypto.decrypt(encryptedPassword);
+    
                 htmlWriter.write("<tr><td>" + id + "</td><td>" + firstName + "</td><td>" + lastName + "</td><td>" + age + "</td><td>" + email + "</td><td>" + password + "</td></tr>\n");
             }
-
+    
             htmlWriter.write("</table>\n</body>\n</html>");
-
+    
             System.out.println("HTML file exported successfully to: " + htmlFilePath);
-
+    
         } catch (SQLException | IOException e) {
             e.printStackTrace();
         }
     }
+    
 
     private static String readPassword(String prompt) {
         Console console = System.console();
@@ -571,40 +609,4 @@ public class AdminRepository {
             throw new RuntimeException("Error hashing password", e);
         }
     }
-    public static void exportStudentsToCSV() {
-        String csvFilePath = "export/students.csv";
-
-        String sql = "SELECT * FROM Student";
-
-        try (Connection connection = Database.getConnection();
-             Statement stmt = connection.createStatement();
-             ResultSet rs = stmt.executeQuery(sql);
-             FileWriter csvWriter = new FileWriter(csvFilePath)) {
-
-            // Write CSV header
-            csvWriter.append("ID,First_name,Last_name,Age,Email,Password\n");
-
-            // Write CSV rows
-            while (rs.next()) {
-                int id = rs.getInt("ID");
-                String firstName = rs.getString("First_name");
-                String lastName = rs.getString("Last_name");
-                int age = rs.getInt("Age");
-                String email = rs.getString("Mail");
-                String password = rs.getString("Password");
-
-                csvWriter.append(String.join(",", String.valueOf(id), firstName, lastName,
-                        String.valueOf(age), email, password));
-                csvWriter.append("\n");
-            }
-
-            System.out.println("CSV file exported successfully to: " + csvFilePath);
-
-        } catch (SQLException | IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-
-    
 }
