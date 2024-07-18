@@ -11,15 +11,36 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.InputMismatchException;
-import java.util.List;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class AdminRepository {
 
+    /*
+     * Admin functions
+     * 1. Create a new student
+     * 2. Update a student
+     * 3. Delete a student
+     * 4. Get all students
+     * 5. Search a student
+     * 6. Add a grade
+     * 7. Export students to CSV
+     * 8. Export students to HTML
+     * 9. Update average grade
+     * 10. Get unique student ID
+     * 11. Get unique gradebook ID
+     * 12. Get unique email
+     * 13. Validate password
+     * 14. Hash password
+     * 15. Read password
+     * 16. Get positive integer input
+     * 17. Get unique integer input
+     * 18. Get unique email input
+     * 19. Get unique gradebook ID input
+     * This Class is in charge of most of the code the all application works around it 
+     */
     // Function to create a new student in TABLES Student and Grade_book
     public static void createAccount(Scanner scanner) {
         System.out.println("Enter first name:");

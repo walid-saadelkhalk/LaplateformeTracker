@@ -2,6 +2,9 @@ package src.model;
 
 public class Crypto {
 
+    /*  
+     * Class that encrypt every data with the Caesar cipher
+     */
 
     // Shift value for the Caesar cipher
     private static final int SHIFT = 3; 

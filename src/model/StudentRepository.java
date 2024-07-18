@@ -10,6 +10,9 @@ import java.util.Scanner;
 
 public class StudentRepository {
 
+    /*  
+     * Class that displays all the needs for a student
+     */
 
     // geter to get the grade of the student
     public float getMathGrade(String studentId) {

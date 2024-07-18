@@ -5,6 +5,9 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Scanner;
 
 public class PasswordHasher {
+    /* 
+     * Class to hash a password with SHA-256 algorithm
+     */
 
     // Function to test the hashing of a password
     public static void main(String[] args) {

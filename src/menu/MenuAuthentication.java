@@ -5,6 +5,13 @@ import src.model.Connecting;
 import src.model.User;
 
 public class MenuAuthentication {
+
+    /*
+     * This method is responsible for the authentication menu.
+    * It will prompt the user to choose between admin, student, or quitting the program.
+    * It will then call the respective menu for the user.
+    * Pop right after Mainloop class
+     */
     public void menuAuthentication(Scanner scanner) {
         boolean continueAuthenticationLoop = true;
 

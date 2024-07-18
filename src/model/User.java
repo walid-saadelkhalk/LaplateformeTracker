@@ -1,6 +1,10 @@
 package src.model;
 
 public class User {
+
+    /*
+     * Class to represent a user
+     */
     private String firstName;
     private String lastName;
     private String email;

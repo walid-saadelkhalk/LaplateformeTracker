@@ -6,6 +6,10 @@ import java.sql.SQLException;
 
 // Class to connect to the database
 public class Database {
+
+    /* 
+     * Class to connect to the database
+     */
     private static final String URL = "jdbc:mysql://localhost:3306/Harvard";
     private static final String USERNAME = "root";
     private static final String PASSWORD = "dominique59";

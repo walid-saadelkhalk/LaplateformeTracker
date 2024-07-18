@@ -5,6 +5,7 @@ import src.model.AdminRepository;
 import src.model.User;
 
 public class MenuAdmin {
+    /* This class is responsible to display the admin Menu after we choose in authentication menu  */
 
     public void menuAdmin(Scanner scanner, User user) {
         boolean continueAdminLoop = true;

@@ -6,6 +6,11 @@ import src.model.StudentRepository;
 import src.model.User;
 
 public class MenuStudent {
+
+    /*
+     * This method is responsible for the student menu.
+     * It will prompt the user to choose between maths, physics, english, gradebook, or quitting the program.
+     */
     public void menuStudent(Scanner scanner, User user) {
         // boolean to keep the loop running
         boolean continueStudentLoop = true;

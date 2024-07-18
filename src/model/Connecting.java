@@ -10,6 +10,11 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 public class Connecting {
+    /*
+     * Function to connect as a student
+     * Function to connect as an admin
+     * Function to authenticate a user
+     */
 
     // Function to connect as a student
     public static User StudentConnection(Scanner scanner) {
