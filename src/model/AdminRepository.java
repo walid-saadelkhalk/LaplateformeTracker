@@ -265,30 +265,36 @@ public class AdminRepository {
     public static void addGrade(Scanner scanner) {
         System.out.println("Enter student ID:");
         String studentId = scanner.nextLine();
-
+    
         if (!studentExists(studentId)) {
             System.out.println("Student not found.");
             return;
         }
-
-        System.out.println("Select subject (1: Math, 2: Physics, 3: English):");
-        int subject = scanner.nextInt();
-        scanner.nextLine(); // consume newline
-
-        String subjectColumn;
-        switch (subject) {
-            case 1:
-                subjectColumn = "Math_grades";
-                break;
-            case 2:
-                subjectColumn = "Physics_grades";
-                break;
-            case 3:
-                subjectColumn = "English_grades";
-                break;
-            default:
-                System.out.println("Invalid choice.");
-                return;
+    
+        String subjectColumn = null;
+        while (subjectColumn == null) {
+            System.out.println("Select subject (1: Math, 2: Physics, 3: English):");
+            if (scanner.hasNextInt()) {
+                int subject = scanner.nextInt();
+                scanner.nextLine(); // consume newline
+    
+                switch (subject) {
+                    case 1:
+                        subjectColumn = "Math_grades";
+                        break;
+                    case 2:
+                        subjectColumn = "Physics_grades";
+                        break;
+                    case 3:
+                        subjectColumn = "English_grades";
+                        break;
+                    default:
+                        System.out.println("Invalid choice. Please select a valid subject.");
+                }
+            } else {
+                System.out.println("Invalid input. Please enter a number (1, 2, or 3).");
+                scanner.next(); // consume invalid input
+            }
         }
 
         int grade;
