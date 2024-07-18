@@ -37,13 +37,12 @@ public class AdminRepository {
     
         int age = getPositiveIntInput(scanner, "Enter age (must be a positive integer):");
     
-        System.out.println("Enter student ID:");
-        String studentId = scanner.nextLine();
+        int studentId = getUniqueIntInput(scanner, "Enter student ID (must be a strictly positive integer):");
     
-        int gradebookId = getPositiveIntInput(scanner, "Enter gradebook ID (must be a positive integer):");
-        
+        int gradebookId = getUniqueGradebookIdInput(scanner, "Enter grade book ID (must be a strictly positive integer):");
+    
         String email = getEmailInput(scanner, "Enter email (must end with @harvard.com):");
-        
+    
         String password;
         while (true) {
             password = readPassword("Enter password (minimum 8 characters, at least one special character, one uppercase letter, one lowercase letter and one number):");
@@ -71,14 +70,14 @@ public class AdminRepository {
             insertStudentStmt.setString(1, encryptedFirstName);
             insertStudentStmt.setString(2, encryptedLastName);
             insertStudentStmt.setInt(3, age);
-            insertStudentStmt.setString(4, studentId);
+            insertStudentStmt.setInt(4, studentId);
             insertStudentStmt.setInt(5, gradebookId);
             insertStudentStmt.setString(6, encryptedEmail);
             insertStudentStmt.setString(7, hashedPassword);
     
             int studentRowsAffected = insertStudentStmt.executeUpdate();
     
-            insertGradeBookStmt.setString(1, studentId);
+            insertGradeBookStmt.setInt(1, studentId);
     
             int gradeBookRowsAffected = insertGradeBookStmt.executeUpdate();
     
@@ -625,5 +624,73 @@ public class AdminRepository {
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException("Error hashing password", e);
         }
+    }
+
+    private static int getUniqueIntInput(Scanner scanner, String prompt) {
+        int value;
+        while (true) {
+            System.out.println(prompt);
+            if (scanner.hasNextInt()) {
+                value = scanner.nextInt();
+                scanner.nextLine(); // Consume newline
+                if (value > 0 && isUniqueStudentId(value)) {
+                    return value;
+                } else {
+                    System.out.println("Value must be a strictly positive integer and unique. Please enter a different value.");
+                }
+            } else {
+                System.out.println("Invalid input. Please enter a valid integer.");
+                scanner.next(); // Consume invalid input
+            }
+        }
+    }
+    
+    private static boolean isUniqueStudentId(int studentId) {
+        String sql = "SELECT COUNT(*) FROM Student WHERE ID_student = ?";
+        try (Connection connection = Database.getConnection();
+             PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, studentId);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) == 0;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    private static int getUniqueGradebookIdInput(Scanner scanner, String prompt) {
+        int value;
+        while (true) {
+            System.out.println(prompt);
+            if (scanner.hasNextInt()) {
+                value = scanner.nextInt();
+                scanner.nextLine(); // Consume newline
+                if (value > 0 && isUniqueGradebookId(value)) {
+                    return value;
+                } else {
+                    System.out.println("Value must be a strictly positive integer and unique. Please enter a different value.");
+                }
+            } else {
+                System.out.println("Invalid input. Please enter a valid integer.");
+                scanner.next(); // Consume invalid input
+            }
+        }
+    }
+
+    private static boolean isUniqueGradebookId(int gradebookId) {
+        String sql = "SELECT COUNT(*) FROM Student WHERE ID_gradebook = ?";
+        try (Connection connection = Database.getConnection();
+             PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, gradebookId);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) == 0;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 }
